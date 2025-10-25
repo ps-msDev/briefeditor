@@ -166,7 +166,7 @@ export default function LetterWriter() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-[1920px] mx-auto p-3 sm:p-6 print:p-0">
+      <div className="max-w-[1920px] mx-auto p-3 sm:p-6 print:p-0 pt-20 sm:pt-24">
         {/* Feature Badges Box - Mobile Only - At the VERY TOP */}
         <div className="lg:hidden mb-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
           <div className="grid grid-cols-2 gap-3">
