@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, FileText } from 'lucide-react';
 import LetterForm from '../components/letter/LetterForm';
@@ -8,12 +8,15 @@ import ImpressumDialog from '../components/letter/ImpressumDialog';
 import PrivacyDialog from '../components/letter/PrivacyDialog';
 import TermsDialog from '../components/letter/TermsDialog';
 import DIN5008InfoDialog from '../components/letter/DIN5008InfoDialog';
+import ZoomTestHelper from '../components/letter/ZoomTestHelper';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { translations } from '../components/translations';
+import { exportAsPDF } from '../utils/pdfExport';
 
 export default function LetterWriter() {
   const [language, setLanguage] = useState('de');
   const t = translations[language];
+  const canvasRef = useRef(null);
 
   const today = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
     day: '2-digit',
@@ -58,7 +61,9 @@ export default function LetterWriter() {
   });
 
   const handleDownloadPDF = () => {
-    window.print();
+    // Simple PDF generation using browser's print function
+    // This creates a PDF with selectable text
+    exportAsPDF(letterData, `brief-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   const handlePrint = () => {
@@ -80,8 +85,8 @@ export default function LetterWriter() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header - Responsive */}
-      <header className="bg-gradient-to-br from-slate-50 via-white to-slate-50 border-b border-slate-200 print:hidden sticky top-0 z-50 shadow-sm">
+      {/* Header - Always visible on desktop */}
+      <header className="bg-white border-b border-slate-200 print:hidden fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div className="max-w-[1920px] mx-auto px-3 sm:px-6 py-3 sm:py-5">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
             {/* Left: Logo and Feature Badges */}
@@ -91,7 +96,12 @@ export default function LetterWriter() {
                   <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="text-sm sm:text-lg font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent truncate">{t.appTitle}</h1>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-sm sm:text-lg font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent truncate">{t.appTitle}</h1>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-medium bg-orange-100 text-orange-800 border border-orange-200">
+                      v1.0.0 Beta
+                    </span>
+                  </div>
                   <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">{t.appSubtitle}</p>
                 </div>
               </div>
@@ -164,110 +174,113 @@ export default function LetterWriter() {
         </div>
       </header>
 
-      {/* Main Content */}
-      <div className="max-w-[1920px] mx-auto p-3 sm:p-6 print:p-0">
-        {/* Feature Badges Box - Mobile Only - At the VERY TOP */}
-        <div className="lg:hidden mb-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+          {/* Main Content */}
+          <div className="main-content max-w-[1920px] mx-auto px-2 py-3 sm:px-4 sm:py-4 lg:px-6 lg:py-6 print:p-0">
+            <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 lg:gap-6 print:flex-col print:gap-0">
+              {/* Editor Panel - First on mobile, first on desktop */}
+              <div className="print:hidden order-1 lg:order-1 lg:w-[480px] lg:flex-shrink-0">
+                {/* Feature Badges Box - Mobile Only - At the VERY TOP */}
+                <div className="lg:hidden mb-3 bg-white rounded-lg border border-slate-200 shadow-sm p-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">{t.featureFree}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">{t.featureNoData}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">{t.featureEasy}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                      <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="font-medium">{t.featureGDPR}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <LetterForm letterData={letterData} setLetterData={setLetterData} translations={t} />
               </div>
-              <span className="font-medium">{t.featureFree}</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+
+              {/* Preview Panel - Second on mobile, second on desktop */}
+              <div className="print:block order-2 lg:order-2 lg:flex-1">
+                <div className="print:static w-full lg:sticky lg:top-0 lg:h-[calc(100vh-8rem)] flex justify-center items-center px-2 sm:px-4">
+                  <LetterPreview letterData={letterData} translations={t} ref={canvasRef} />
+                </div>
               </div>
-              <span className="font-medium">{t.featureNoData}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+
+            {/* Mobile Action Buttons - Only on mobile */}
+            <div className="lg:hidden mt-3 bg-white rounded-lg border border-slate-200 shadow-sm p-3">
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handlePrint}
+                  variant="outline"
+                  className="flex-1 border-slate-300 hover:bg-slate-50"
+                  disabled={!letterData.body}
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  {t.btnPrint}
+                </Button>
+                <Button 
+                  onClick={handleDownloadPDF}
+                  className="flex-1 bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
+                  disabled={!letterData.body}
+                  title="Wählen Sie 'Als PDF speichern' im Druckdialog"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {t.btnDownloadPDF}
+                </Button>
               </div>
-              <span className="font-medium">{t.featureEasy}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-600">
-              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+
+            {/* DIN 5008 Info Button - Mobile Only */}
+            <div className="lg:hidden mt-4">
+              <DIN5008InfoDialog language={language} />
+            </div>
+
+            {/* Legal Information - Responsive Footer */}
+            <div className="mt-8 sm:mt-12 print:hidden">
+              <div className="flex flex-col gap-2 text-[10px] sm:text-xs">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                  <ImpressumDialog language={language} />
+                  <span className="text-slate-300">·</span>
+                  <PrivacyDialog language={language} />
+                  <span className="text-slate-300">·</span>
+                  <TermsDialog language={language} />
+                </div>
+                <div className="text-slate-400">
+                  © 2025 Philipp Schmidt. MIT License
+                </div>
+                <div className="text-slate-400 text-[9px] sm:text-[10px]">
+                  Version 1.0.0 Beta
+                </div>
               </div>
-              <span className="font-medium">{t.featureGDPR}</span>
+            </div>
+
+            {/* Language Switcher - At bottom on mobile, static */}
+            <div className="lg:hidden mt-4 flex justify-end">
+              <LanguageSwitcher currentLanguage={language} onLanguageChange={handleLanguageChange} />
             </div>
           </div>
-        </div>
-
-        <div className="grid lg:grid-cols-[480px,1fr] gap-4 sm:gap-6 print:grid-cols-1 print:gap-0">
-          {/* Editor Panel - Scrollable */}
-          <div className="print:hidden">
-            <LetterForm letterData={letterData} setLetterData={setLetterData} translations={t} />
-          </div>
-
-          {/* Preview Panel - Sticky on desktop, normal on mobile */}
-          <div className="print:block">
-            <div className="lg:sticky lg:top-[120px] flex justify-center items-start print:static">
-              <LetterPreview letterData={letterData} translations={t} />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Action Buttons - Only on mobile */}
-        <div className="lg:hidden mt-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-          <div className="flex gap-3">
-            <Button 
-              onClick={handlePrint}
-              variant="outline"
-              className="flex-1 border-slate-300 hover:bg-slate-50"
-              disabled={!letterData.body}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              {t.btnPrint}
-            </Button>
-            <Button 
-              onClick={handleDownloadPDF}
-              className="flex-1 bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
-              disabled={!letterData.body}
-              title="Wählen Sie 'Als PDF speichern' im Druckdialog"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              {t.btnDownloadPDF}
-            </Button>
-          </div>
-        </div>
-
-        {/* DIN 5008 Info Button - Mobile Only */}
-        <div className="lg:hidden mt-4">
-          <DIN5008InfoDialog language={language} />
-        </div>
-
-        {/* Legal Information - Responsive Footer */}
-        <div className="mt-8 sm:mt-12 print:hidden">
-          <div className="flex flex-col gap-2 text-[10px] sm:text-xs">
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <ImpressumDialog language={language} />
-              <span className="text-slate-300">·</span>
-              <PrivacyDialog language={language} />
-              <span className="text-slate-300">·</span>
-              <TermsDialog language={language} />
-            </div>
-            <div className="text-slate-400">
-              © 2025 Philipp Schmidt. MIT License
-            </div>
-          </div>
-        </div>
-
-        {/* Language Switcher - At bottom on mobile, static */}
-        <div className="lg:hidden mt-4 flex justify-end">
-          <LanguageSwitcher currentLanguage={language} onLanguageChange={handleLanguageChange} />
-        </div>
-      </div>
 
       {/* Language Switcher - Desktop only (fixed position) */}
       <div className="hidden lg:block fixed bottom-4 right-4 z-50">

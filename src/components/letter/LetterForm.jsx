@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,21 +8,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { User, MapPin, FileText, Calendar, Building2, Scale } from 'lucide-react';
 
 export default function LetterForm({ letterData, setLetterData, translations: t }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
   const handleChange = (field, value) => {
     setLetterData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {/* Sender Information */}
       <Card className="border-slate-200 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
+        <CardHeader className="pb-2 sm:pb-3">
+          <CardTitle className="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
             <User className="w-4 h-4 text-slate-600" />
             {t.senderTitle}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2 sm:space-y-3">
           <div>
             <Label htmlFor="senderName" className="text-xs font-medium text-slate-600">{t.labelName}</Label>
             <Input
@@ -30,7 +43,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.senderName}
               onChange={(e) => handleChange('senderName', e.target.value)}
               placeholder={t.placeholderName}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -40,7 +53,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.senderStreet}
               onChange={(e) => handleChange('senderStreet', e.target.value)}
               placeholder={t.placeholderStreet}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -50,7 +63,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.senderCity}
               onChange={(e) => handleChange('senderCity', e.target.value)}
               placeholder={t.placeholderCity}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -61,7 +74,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.senderPhone}
                 onChange={(e) => handleChange('senderPhone', e.target.value)}
                 placeholder={t.placeholderPhone}
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -71,7 +84,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.senderEmail}
                 onChange={(e) => handleChange('senderEmail', e.target.value)}
                 placeholder={t.placeholderEmail}
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
           </div>
@@ -80,13 +93,13 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
 
       {/* Recipient Information */}
       <Card className="border-slate-200 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
+        <CardHeader className="pb-2 sm:pb-3">
+          <CardTitle className="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-slate-600" />
             {t.recipientTitle}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2 sm:space-y-3">
           <div>
             <Label htmlFor="recipientName" className="text-xs font-medium text-slate-600">{t.labelRecipientName}</Label>
             <Input
@@ -94,7 +107,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.recipientName}
               onChange={(e) => handleChange('recipientName', e.target.value)}
               placeholder={t.placeholderRecipient}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -104,7 +117,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.recipientStreet}
               onChange={(e) => handleChange('recipientStreet', e.target.value)}
               placeholder={t.placeholderRecipientStreet}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -114,7 +127,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.recipientCity}
               onChange={(e) => handleChange('recipientCity', e.target.value)}
               placeholder={t.placeholderRecipientCity}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
         </CardContent>
@@ -122,20 +135,20 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
 
       {/* Letter Content */}
       <Card className="border-slate-200 shadow-sm">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-slate-900 flex items-center gap-2">
+        <CardHeader className="pb-2 sm:pb-3">
+          <CardTitle className="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
             <FileText className="w-4 h-4 text-slate-600" />
             {t.contentTitle}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2 sm:space-y-3">
           <div>
             <Label htmlFor="date" className="text-xs font-medium text-slate-600">{t.labelDate}</Label>
             <Input
               id="date"
               value={letterData.date}
               onChange={(e) => handleChange('date', e.target.value)}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -145,7 +158,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.subject}
               onChange={(e) => handleChange('subject', e.target.value)}
               placeholder={t.placeholderSubject}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -155,7 +168,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.salutation}
               onChange={(e) => handleChange('salutation', e.target.value)}
               placeholder={t.placeholderSalutation}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -165,7 +178,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.body}
               onChange={(e) => handleChange('body', e.target.value)}
               placeholder={t.placeholderBody}
-              className="mt-1 min-h-[200px] text-sm border-slate-200 font-sans leading-relaxed"
+              className="mt-1 min-h-[120px] sm:min-h-[160px] lg:min-h-[200px] text-sm border-slate-200 font-sans leading-relaxed"
             />
           </div>
           <div>
@@ -175,7 +188,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.closing}
               onChange={(e) => handleChange('closing', e.target.value)}
               placeholder={t.placeholderClosing}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
           <div>
@@ -185,7 +198,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               value={letterData.signatureName}
               onChange={(e) => handleChange('signatureName', e.target.value)}
               placeholder={t.placeholderSignatureName}
-              className="mt-1 h-9 text-sm border-slate-200"
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
             />
           </div>
         </CardContent>
@@ -210,14 +223,14 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
           </div>
         </CardHeader>
         {letterData.enableFooter && (
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 sm:space-y-3">
             <div>
               <Label htmlFor="footerAlignment" className="text-xs font-medium text-slate-600">{t.footerAlignment}</Label>
               <Select
                 value={letterData.footerAlignment}
                 onValueChange={(value) => handleChange('footerAlignment', value)}
               >
-                <SelectTrigger className="mt-1 h-9 text-sm border-slate-200">
+                <SelectTrigger className="mt-1 h-8 sm:h-9 text-sm border-slate-200">
                   <SelectValue placeholder={t.footerAlignment} />
                 </SelectTrigger>
                 <SelectContent>
@@ -233,7 +246,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.footerText}
                 onChange={(e) => handleChange('footerText', e.target.value)}
                 placeholder={t.footerTextPlaceholder}
-                className="mt-1 min-h-[80px] text-sm border-slate-200"
+                className="mt-1 min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] text-sm border-slate-200"
               />
             </div>
           </CardContent>
@@ -259,7 +272,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
           </div>
         </CardHeader>
         {letterData.enableLegalInfo && (
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2 sm:space-y-3">
             <div>
               <Label htmlFor="companyName" className="text-xs font-medium text-slate-600">{t.companyName}</Label>
               <Input
@@ -267,7 +280,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.companyName}
                 onChange={(e) => handleChange('companyName', e.target.value)}
                 placeholder="Musterfirma GmbH"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -277,7 +290,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.registeredOffice}
                 onChange={(e) => handleChange('registeredOffice', e.target.value)}
                 placeholder="Berlin"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -288,7 +301,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                   value={letterData.companyPhone}
                   onChange={(e) => handleChange('companyPhone', e.target.value)}
                   placeholder="+49 30 123456"
-                  className="mt-1 h-9 text-sm border-slate-200"
+                  className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
                 />
               </div>
               <div>
@@ -298,7 +311,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                   value={letterData.companyFax}
                   onChange={(e) => handleChange('companyFax', e.target.value)}
                   placeholder="+49 30 123457"
-                  className="mt-1 h-9 text-sm border-slate-200"
+                  className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
                 />
               </div>
             </div>
@@ -309,7 +322,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.companyEmail}
                 onChange={(e) => handleChange('companyEmail', e.target.value)}
                 placeholder="info@firma.de"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -319,7 +332,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.companyWebsite}
                 onChange={(e) => handleChange('companyWebsite', e.target.value)}
                 placeholder="www.firma.de"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -329,7 +342,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.bankDetails}
                 onChange={(e) => handleChange('bankDetails', e.target.value)}
                 placeholder="IBAN: DE89 3704 0044 0532 0130 00"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -339,7 +352,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.vatId}
                 onChange={(e) => handleChange('vatId', e.target.value)}
                 placeholder="DE123456789"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -349,7 +362,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.managingDirectors}
                 onChange={(e) => handleChange('managingDirectors', e.target.value)}
                 placeholder="Max Mustermann, Maria Musterfrau"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div>
@@ -359,7 +372,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                 value={letterData.supervisoryBoard}
                 onChange={(e) => handleChange('supervisoryBoard', e.target.value)}
                 placeholder="Dr. Hans Müller"
-                className="mt-1 h-9 text-sm border-slate-200"
+                className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -370,7 +383,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                   value={letterData.registrationCourt}
                   onChange={(e) => handleChange('registrationCourt', e.target.value)}
                   placeholder="Berlin"
-                  className="mt-1 h-9 text-sm border-slate-200"
+                  className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
                 />
               </div>
               <div>
@@ -380,7 +393,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
                   value={letterData.hrbNumber}
                   onChange={(e) => handleChange('hrbNumber', e.target.value)}
                   placeholder="HRB 12345"
-                  className="mt-1 h-9 text-sm border-slate-200"
+                  className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
                 />
               </div>
             </div>
@@ -399,7 +412,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-semibold text-slate-900">{t.guidesTitle}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-2 sm:space-y-3">
           <div className="flex items-center justify-between">
             <Label htmlFor="showFoldMarks" className="text-xs font-medium text-slate-600 cursor-pointer">{t.showFoldMarks}</Label>
             <Switch
@@ -417,11 +430,24 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
             />
           </div>
           <div className="flex items-center justify-between">
-            <Label htmlFor="showGuides" className="text-xs font-medium text-slate-600 cursor-pointer">{t.showGuides}</Label>
+            <Label htmlFor="showGuides" className="text-xs font-medium text-slate-600 cursor-pointer">
+              <span className="hidden sm:inline">{t.showGuides}</span>
+              <span className="sm:hidden">
+                Hilfslinien
+                <span className="block text-xs text-slate-400 mt-1">(Nur Desktop)</span>
+              </span>
+            </Label>
             <Switch
               id="showGuides"
               checked={letterData.showGuides}
-              onCheckedChange={(checked) => handleChange('showGuides', checked)}
+              onCheckedChange={(checked) => {
+                // Only allow changes on desktop
+                if (!isMobile) {
+                  handleChange('showGuides', checked);
+                }
+              }}
+              disabled={isMobile}
+              className={isMobile ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}
             />
           </div>
         </CardContent>
