@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, MapPin, FileText, Calendar, Building2, Scale } from 'lucide-react';
+import { User, MapPin, FileText, Calendar, Building2, Scale, Play, Trash2 } from 'lucide-react';
 
 export default function LetterForm({ letterData, setLetterData, translations: t }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -23,6 +23,57 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
 
   const handleChange = (field, value) => {
     setLetterData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const insertTestText = () => {
+    setLetterData(prev => ({
+      ...prev,
+      senderName: 'Max Mustermann',
+      senderStreet: 'Musterstraße 123',
+      senderCity: '12345 Musterstadt',
+      senderPhone: '+49 123 456789',
+      senderEmail: 'max.mustermann@example.com',
+      recipientName: 'Beispiel GmbH',
+      recipientStreet: 'Beispielstraße 456',
+      recipientCity: '54321 Beispielstadt',
+      subject: 'Betreff: Testbrief',
+      body: 'vielen Dank für Ihr Interesse an unseren Dienstleistungen.\n\nMit freundlichen Grüßen',
+      salutation: 'Sehr geehrte Damen und Herren,',
+      closing: 'Mit freundlichen Grüßen',
+      signatureName: 'Max Mustermann'
+    }));
+  };
+
+  const clearAllText = () => {
+    setLetterData(prev => ({
+      ...prev,
+      senderName: '',
+      senderStreet: '',
+      senderCity: '',
+      senderPhone: '',
+      senderEmail: '',
+      recipientName: '',
+      recipientStreet: '',
+      recipientCity: '',
+      subject: '',
+      body: '',
+      salutation: prev.salutation, // Keep current salutation
+      closing: prev.closing, // Keep current closing
+      signatureName: '',
+      footerText: '',
+      companyName: '',
+      registeredOffice: '',
+      companyPhone: '',
+      companyFax: '',
+      companyEmail: '',
+      companyWebsite: '',
+      bankDetails: '',
+      vatId: '',
+      managingDirectors: '',
+      supervisoryBoard: '',
+      registrationCourt: '',
+      hrbNumber: ''
+    }));
   };
 
   return (
@@ -449,6 +500,31 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               disabled={isMobile}
               className={isMobile ? "opacity-50 cursor-not-allowed" : "opacity-100 cursor-pointer"}
             />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Test Text Buttons */}
+      <Card className="border-slate-200 shadow-sm">
+        <CardHeader className="pb-3">
+          
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex gap-2">
+            <button
+              onClick={insertTestText}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-md hover:bg-slate-200 hover:border-slate-300 transition-colors"
+            >
+              <Play className="w-4 h-4" />
+              Testtext einfügen
+            </button>
+            <button
+              onClick={clearAllText}
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-slate-100 border border-slate-200 rounded-md hover:bg-slate-200 hover:border-slate-300 transition-colors"
+            >
+              <Trash2 className="w-4 h-4" />
+              Alle Felder leeren
+            </button>
           </div>
         </CardContent>
       </Card>
