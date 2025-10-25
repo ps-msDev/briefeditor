@@ -11,7 +11,7 @@ import DIN5008InfoDialog from '../components/letter/DIN5008InfoDialog';
 import ZoomTestHelper from '../components/letter/ZoomTestHelper';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { translations } from '../components/translations';
-import { exportAsPDF } from '../utils/pdfExport';
+import { exportAsPDF, printAsPDF } from '../utils/pdfExport';
 
 export default function LetterWriter() {
   const [language, setLanguage] = useState('de');
@@ -67,7 +67,7 @@ export default function LetterWriter() {
   };
 
   const handlePrint = () => {
-    window.print();
+    printAsPDF(letterData);
   };
 
   const handleLanguageChange = (newLang) => {
