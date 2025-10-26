@@ -212,12 +212,32 @@ const A4Canvas = forwardRef(({
           fontFamily: 'monospace'
         }}>Anschrift (62.7-90mm)</div>
         
+        {/* Main text field (Textfeld) - starts 8.46mm below recipient address window, ends 4cm from bottom */}
+        <div style={{
+          position: 'absolute',
+          top: `${98.46 * PX_PER_MM}px`,
+          left: `${25 * PX_PER_MM}px`,
+          right: `${20 * PX_PER_MM}px`,
+          bottom: `${40 * PX_PER_MM}px`,
+          border: '2px dashed rgb(96, 165, 250)',
+          backgroundColor: 'rgba(96, 165, 250, 0.1)',
+          opacity: 0.2
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: `${97.46 * PX_PER_MM}px`,
+          left: `${25 * PX_PER_MM}px`,
+          fontSize: '8px',
+          color: 'rgb(96, 165, 250)',
+          fontFamily: 'monospace'
+        }}>Textfeld</div>
+        
         {/* Info box area */}
         <div style={{
           position: 'absolute',
           top: `${50 * PX_PER_MM}px`,
           left: `${125 * PX_PER_MM}px`,
-          right: `${10 * PX_PER_MM}px`,
+          width: `${75 * PX_PER_MM}px`,
           height: `${40 * PX_PER_MM}px`,
           border: '2px dashed rgb(249, 115, 22)',
           backgroundColor: 'rgba(249, 115, 22, 0.1)',

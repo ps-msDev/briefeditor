@@ -123,12 +123,6 @@ export default function LetterPreview({ letterData, translations: t }) {
         {letterData.showGuides && (
           <div className="print:hidden absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
             {/* Page margins - Using percentages */}
-            <div className="absolute border-2 border-dashed border-blue-400 opacity-30" style={{
-              top: '15.15%',
-              left: '11.9%',
-              right: '9.52%',
-              bottom: '8.42%'
-            }} />
             
             {/* Sender block */}
             <div className="absolute border border-dashed border-purple-400 bg-purple-100 opacity-20" style={{
@@ -154,11 +148,23 @@ export default function LetterPreview({ letterData, translations: t }) {
               left: '11.9%'
             }}>Anschrift</div>
             
+            {/* Main text field (Textfeld) - starts 8.46mm below recipient address window, ends 4cm from bottom */}
+            <div className="absolute border-2 border-dashed border-blue-500 bg-blue-100 opacity-20" style={{
+              top: '33.15%',
+              left: '11.9%',
+              right: '9.52%',
+              bottom: '13.47%'
+            }} />
+            <div className="absolute text-[8px] text-blue-600 font-mono" style={{
+              top: '32.5%',
+              left: '11.9%'
+            }}>Textfeld</div>
+            
             {/* Info box area */}
             <div className="absolute border-2 border-dashed border-orange-500 bg-orange-100 opacity-20" style={{
               top: '16.84%',
               left: '59.52%',
-              right: '9.52%',
+              width: '35.71%',
               height: '13.47%'
             }} />
             <div className="absolute text-[8px] text-orange-600 font-mono" style={{
