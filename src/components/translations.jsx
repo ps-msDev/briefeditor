@@ -35,7 +35,7 @@ export const translations = {
     labelBody: 'Haupttext',
     labelClosing: 'Grußformel',
     labelSignature: 'Unterschrift Name',
-    labelRecipientAddressSupplement: 'Zusatz zum Empfänger',
+    labelRecipientAddressSupplement: 'Adresszusatz',
     
     // Placeholders
     placeholderName: 'Max Mustermann',
@@ -51,7 +51,7 @@ export const translations = {
     placeholderBody: 'hiermit möchte ich Ihnen mitteilen...',
     placeholderClosing: 'Mit freundlichen Grüßen',
     placeholderSignatureName: 'Name unter der Unterschrift',
-    placeholderRecipientAddressSupplement: 'Zusatz zum Empfänger',
+    placeholderRecipientAddressSupplement: 'Adresszusatz',
     
     // Footer
     enableFooter: 'Aktivieren',
