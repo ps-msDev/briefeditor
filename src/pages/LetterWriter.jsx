@@ -15,6 +15,10 @@ export default function LetterWriter() {
   const [language, setLanguage] = useState('de');
   const t = translations[language];
   const canvasRef = useRef(null);
+  
+  // Generate default filename based on current date
+  const defaultFilename = `brief-${new Date().toISOString().split('T')[0]}.pdf`;
+  const [pdfFilename, setPdfFilename] = useState(defaultFilename);
 
   const today = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
     day: '2-digit',
@@ -59,7 +63,9 @@ export default function LetterWriter() {
   });
 
   const handleDownloadPDF = () => {
-    exportAsPDF(letterData, `brief-${new Date().toISOString().split('T')[0]}.pdf`);
+    // Use the custom filename if provided, otherwise fallback to default
+    const filename = pdfFilename.trim() || defaultFilename;
+    exportAsPDF(letterData, filename);
   };
 
   const handlePrint = () => {
@@ -208,7 +214,7 @@ export default function LetterWriter() {
         <div className="grid lg:grid-cols-[480px,1fr] gap-4 sm:gap-6 print:grid-cols-1 print:gap-0">
           {/* Editor Panel - Scrollable */}
           <div className="print:hidden">
-            <LetterForm letterData={letterData} setLetterData={setLetterData} translations={t} />
+            <LetterForm letterData={letterData} setLetterData={setLetterData} translations={t} pdfFilename={pdfFilename} setPdfFilename={setPdfFilename} />
           </div>
 
           {/* Preview Panel - Sticky on desktop, normal on mobile */}

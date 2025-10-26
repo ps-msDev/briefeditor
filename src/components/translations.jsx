@@ -79,6 +79,10 @@ export const translations = {
     showHoleMark: 'Lochmarke anzeigen',
     showGuides: 'DIN 5008 Hilfslinien anzeigen',
     
+    // PDF Export
+    labelFilename: 'PDF-Dateiname',
+    placeholderFilename: 'brief-2025-01-15.pdf',
+    
     // Info Box
     infoBoxTitle: 'DIN 5008 - Form B',
     infoBoxText: 'Dieser Brief orientiert sich an den offiziellen deutschen Geschäftsbrief-Standards (DIN 5008 - Form B, Stand März 2020). Perfekt für Fensterumschläge (C6/5 oder DL) geeignet. Keine Garantie',
@@ -167,6 +171,10 @@ export const translations = {
     showFoldMarks: 'Show fold marks',
     showHoleMark: 'Show hole mark',
     showGuides: 'Show DIN 5008 guidelines',
+    
+    // PDF Export
+    labelFilename: 'PDF Filename',
+    placeholderFilename: 'letter-2025-01-15.pdf',
     
     // Info Box
     infoBoxTitle: 'DIN 5008 - Type B',

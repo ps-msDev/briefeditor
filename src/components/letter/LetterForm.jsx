@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User, MapPin, FileText, Calendar, Building2, Scale, Play, Trash2 } from 'lucide-react';
 
-export default function LetterForm({ letterData, setLetterData, translations: t }) {
+export default function LetterForm({ letterData, setLetterData, translations: t, pdfFilename, setPdfFilename }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -520,6 +520,28 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
               <Trash2 className="w-4 h-4" />
               Alle Felder leeren
             </button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* PDF Filename */}
+      <Card className="border-slate-200 shadow-sm">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm sm:text-base font-semibold text-slate-900 flex items-center gap-2">
+            <FileText className="w-4 h-4 text-slate-600" />
+            PDF Export
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2 sm:space-y-3">
+          <div>
+            <Label htmlFor="pdfFilename" className="text-xs font-medium text-slate-600">{t.labelFilename}</Label>
+            <Input
+              id="pdfFilename"
+              value={pdfFilename}
+              onChange={(e) => setPdfFilename(e.target.value)}
+              placeholder={t.placeholderFilename}
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
+            />
           </div>
         </CardContent>
       </Card>
