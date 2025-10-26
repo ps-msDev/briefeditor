@@ -218,7 +218,7 @@ export default function LetterPreview({ letterData, translations: t }) {
 
               {/* Information Box - Screen uses %, print uses mm */}
               <div className="din-9pt absolute print:hidden flex flex-col justify-between" style={{ 
-                top: '16.84%',
+                top: '21.11%',
                 left: '59.52%',
                 right: '9.52%',
                 height: '13.47%'
@@ -234,12 +234,12 @@ export default function LetterPreview({ letterData, translations: t }) {
                 )}
               </div>
               <div className="din-9pt absolute hidden print:flex flex-col justify-between" style={{ 
-                top: '50mm',
+                top: '62.7mm',
                 left: '125mm',
                 right: '10mm',
                 height: '40mm'
               }}>
-                <div style={{ paddingTop: '12.7mm' }}>
+                <div>
                   {letterData.senderPhone && <div>Telefon: {letterData.senderPhone}</div>}
                   {letterData.senderEmail && <div>E-Mail: {letterData.senderEmail}</div>}
                 </div>
@@ -316,7 +316,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                 </>
               )}
 
-              {/* Body Text - Screen uses %, print uses mm */}
+              {/* Body Text with Closing and Signature - Screen uses %, print uses mm */}
               {letterData.body && (
                 <>
                   <div className="din-text absolute print:hidden text-justify whitespace-pre-wrap" style={{ 
@@ -327,6 +327,15 @@ export default function LetterPreview({ letterData, translations: t }) {
                     overflow: 'hidden'
                   }}>
                     {letterData.body}
+                    {/* Closing and Signature positioned after body */}
+                    {letterData.closing && (
+                      <>
+                        <div style={{ height: '5%', marginTop: '5%' }}></div>
+                        <div>{letterData.closing}</div>
+                        <div style={{ height: '5%', marginTop: '5%' }}></div>
+                        {letterData.signatureName && <div>{letterData.signatureName}</div>}
+                      </>
+                    )}
                   </div>
                   <div className="din-text absolute hidden print:block text-justify whitespace-pre-wrap" style={{ 
                     top: '156mm',
@@ -334,33 +343,19 @@ export default function LetterPreview({ letterData, translations: t }) {
                     right: '20mm'
                   }}>
                     {letterData.body}
+                    {/* Closing and Signature positioned after body */}
+                    {letterData.closing && (
+                      <>
+                        <div style={{ height: '20mm', marginTop: '20mm' }}></div>
+                        <div>{letterData.closing}</div>
+                        <div style={{ height: '28mm', marginTop: '28mm' }}></div>
+                        {letterData.signatureName && <div>{letterData.signatureName}</div>}
+                      </>
+                    )}
                   </div>
                 </>
               )}
 
-              {/* Closing and Signature - Screen uses %, print uses mm */}
-              {letterData.closing && letterData.body && (
-                <>
-                  <div className="din-text absolute print:hidden" style={{ 
-                    bottom: '15.15%',
-                    left: '11.9%',
-                    right: '9.52%'
-                  }}>
-                    <div>{letterData.closing}</div>
-                    <div style={{ height: '5.05%' }}></div>
-                    {letterData.signatureName && <div>{letterData.signatureName}</div>}
-                  </div>
-                  <div className="din-text absolute hidden print:block" style={{ 
-                    bottom: '45mm',
-                    left: '25mm',
-                    right: '20mm'
-                  }}>
-                    <div>{letterData.closing}</div>
-                    <div style={{ height: '15mm' }}></div>
-                    {letterData.signatureName && <div>{letterData.signatureName}</div>}
-                  </div>
-                </>
-              )}
 
               {/* Footer Area - Screen uses %, print uses mm */}
               {(letterData.enableFooter || letterData.enableLegalInfo) && (
