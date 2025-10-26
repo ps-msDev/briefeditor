@@ -16,7 +16,7 @@ BriefEditor solves a simple problem: writing professional letters shouldn't requ
 
 - DIN 5008 compliant formatting
 - Real-time preview
-- PDF export
+- PDF export, client/brwoser side pdf generation
 - Mobile responsive
 - No data collection
 - German/English support
