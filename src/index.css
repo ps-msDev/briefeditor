@@ -40,7 +40,13 @@ header {
   z-index: 50 !important;
   background: white !important;
   height: auto !important;
-  min-height: 80px !important;
+  min-height: 60px !important;
+}
+
+@media (min-width: 640px) {
+  header {
+    min-height: 80px !important;
+  }
 }
 
 /* Ensure main content starts below header with appropriate space */

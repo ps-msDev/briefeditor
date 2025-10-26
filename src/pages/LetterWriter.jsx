@@ -166,9 +166,9 @@ export default function LetterWriter() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-[1920px] mx-auto p-3 sm:p-6 print:p-0 pt-20 sm:pt-24">
+      <div className="max-w-[1920px] mx-auto p-3 sm:p-6 print:p-0 pt-16 sm:pt-24">
         {/* Feature Badges Box - Mobile Only - At the VERY TOP */}
-        <div className="lg:hidden mb-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
+        <div className="lg:hidden mb-4 mt-3 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
           <div className="grid grid-cols-2 gap-3">
             <div className="flex items-center gap-2 text-xs text-slate-600">
               <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
