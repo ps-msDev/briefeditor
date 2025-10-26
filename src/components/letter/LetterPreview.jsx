@@ -302,18 +302,18 @@ export default function LetterPreview({ letterData, translations: t }) {
                 </>
               )}
 
-              {/* Salutation - Screen uses %, print uses mm */}
+              {/* Salutation - 2 blank lines after subject (DIN 5008) */}
               {letterData.salutation && (
                 <>
                   <div className="din-text absolute print:hidden" style={{ 
-                    top: '48.15%',
+                    top: '47%', // Approximately 2 blank lines after subject
                     left: '11.9%',
                     right: '9.52%'
                   }}>
                     {letterData.salutation}
                   </div>
                   <div className="din-text absolute hidden print:block" style={{ 
-                    top: '143mm',
+                    top: '134mm', // 125mm + 2×4.46mm = 134mm (2 blank lines after subject)
                     left: '25mm',
                     right: '20mm'
                   }}>
@@ -322,39 +322,39 @@ export default function LetterPreview({ letterData, translations: t }) {
                 </>
               )}
 
-              {/* Body Text with Closing and Signature - Screen uses %, print uses mm */}
+              {/* Body Text with Closing and Signature - 1 blank line after salutation (DIN 5008) */}
               {letterData.body && (
                 <>
                   <div className="din-text absolute print:hidden text-left whitespace-pre-wrap" style={{ 
-                    top: '52.53%',
+                    top: '51%', // Approximately 1 blank line after salutation
                     left: '11.9%',
                     right: '9.52%',
                     maxHeight: '30%',
                     overflow: 'hidden'
                   }}>
                     {letterData.body}
-                    {/* Closing and Signature positioned after body */}
+                    {/* Closing and Signature positioned after body (DIN 5008 spacing) */}
                     {letterData.closing && (
                       <>
-                        <div style={{ height: '5%', marginTop: '5%' }}></div>
+                        <div style={{ height: '4.46mm', marginTop: '4.46mm' }}></div>
                         <div>{letterData.closing}</div>
-                        <div style={{ height: '5%', marginTop: '5%' }}></div>
+                        <div style={{ height: '8.92mm', marginTop: '8.92mm' }}></div>
                         {letterData.signatureName && <div>{letterData.signatureName}</div>}
                       </>
                     )}
                   </div>
                   <div className="din-text absolute hidden print:block text-left whitespace-pre-wrap" style={{ 
-                    top: '156mm',
+                    top: '138mm', // 134mm + 4.46mm = 138mm (1 blank line after salutation)
                     left: '25mm',
                     right: '20mm'
                   }}>
                     {letterData.body}
-                    {/* Closing and Signature positioned after body */}
+                    {/* Closing and Signature positioned after body (DIN 5008: 1 blank line after body, 2 blank lines before signature) */}
                     {letterData.closing && (
                       <>
-                        <div style={{ height: '20mm', marginTop: '20mm' }}></div>
+                        <div style={{ height: '4.46mm', marginTop: '4.46mm' }}></div>
                         <div>{letterData.closing}</div>
-                        <div style={{ height: '28mm', marginTop: '28mm' }}></div>
+                        <div style={{ height: '8.92mm', marginTop: '8.92mm' }}></div>
                         {letterData.signatureName && <div>{letterData.signatureName}</div>}
                       </>
                     )}

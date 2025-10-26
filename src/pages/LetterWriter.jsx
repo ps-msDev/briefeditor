@@ -150,28 +150,16 @@ export default function LetterWriter() {
             <div className="hidden lg:flex items-center gap-2">
               <DIN5008InfoDialog language={language} translations={t} />
               <div className="h-6 w-px bg-slate-300"></div>
-              <div className="flex items-center gap-2">
-                <Button 
-                  onClick={handlePrint}
-                  variant="outline"
-                  size="sm"
-                  className="border-slate-300 hover:bg-slate-50"
-                  disabled={!letterData.body}
-                >
-                  <FileText className="w-4 h-4 mr-2" />
-                  {t.btnPrint}
-                </Button>
-                <Button 
-                  onClick={handleDownloadPDF}
-                  size="sm"
-                  className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
-                  disabled={!letterData.body}
-                  title="Wählen Sie 'Als PDF speichern' im Druckdialog"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  {t.btnDownloadPDF}
-                </Button>
-              </div>
+              <Button 
+                onClick={handleDownloadPDF}
+                size="sm"
+                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
+                disabled={!letterData.body}
+                title="Wählen Sie 'Als PDF speichern' im Druckdialog"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                {t.btnDownloadPDF}
+              </Button>
             </div>
           </div>
         </div>
@@ -233,26 +221,15 @@ export default function LetterWriter() {
 
         {/* Mobile Action Buttons - Only on mobile */}
         <div className="lg:hidden mt-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
-          <div className="flex gap-3">
-            <Button 
-              onClick={handlePrint}
-              variant="outline"
-              className="flex-1 border-slate-300 hover:bg-slate-50"
-              disabled={!letterData.body}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              {t.btnPrint}
-            </Button>
-            <Button 
-              onClick={handleDownloadPDF}
-              className="flex-1 bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
-              disabled={!letterData.body}
-              title="Wählen Sie 'Als PDF speichern' im Druckdialog"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              {t.btnDownloadPDF}
-            </Button>
-          </div>
+          <Button 
+            onClick={handleDownloadPDF}
+            className="w-full bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
+            disabled={!letterData.body}
+            title="Wählen Sie 'Als PDF speichern' im Druckdialog"
+          >
+            <Download className="w-4 h-4 mr-2" />
+            {t.btnDownloadPDF}
+          </Button>
         </div>
 
         {/* DIN 5008 Info Box - Mobile Only */}
