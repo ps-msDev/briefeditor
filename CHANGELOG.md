@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/ps-msDev/briefeditor/compare/v1.1.0...v1.2.0) (2025-10-26)
+
+
+### Features
+
+* Add recipient address supplement functionality across components ([4a91120](https://github.com/ps-msDev/briefeditor/commit/4a911208b9e2ef3ee4e7090669b84685539259a2))
+* Enhance LetterPreview and PDF export with new font size and separator line ([4f614c5](https://github.com/ps-msDev/briefeditor/commit/4f614c50cd9627f3091e5c6c853e5c6e914046b9))
+
+
+### Bug Fixes
+
+* Adjust layout in LetterPreview component for improved spacing ([3e0f52c](https://github.com/ps-msDev/briefeditor/commit/3e0f52c16daf8a61f075e074e54c10248e8e019a))
+* Refine character limit warning logic in LetterForm component ([d2d3755](https://github.com/ps-msDev/briefeditor/commit/d2d3755b6b21f193be3e2f44e873faac3866b88d))
+* Update translations for recipient address supplement in German ([0fcc1f9](https://github.com/ps-msDev/briefeditor/commit/0fcc1f9905c905792f7f6dc5e09d9b2a81d40cf7))
+
 ## [1.1.0](https://github.com/ps-msDev/briefeditor/compare/v1.0.0...v1.1.0) (2025-10-26)
 
 
