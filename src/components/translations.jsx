@@ -35,6 +35,7 @@ export const translations = {
     labelBody: 'Haupttext',
     labelClosing: 'Grußformel',
     labelSignature: 'Unterschrift Name',
+    labelRecipientAddressSupplement: 'Adresszusatz',
     
     // Placeholders
     placeholderName: 'Max Mustermann',
@@ -50,6 +51,7 @@ export const translations = {
     placeholderBody: 'hiermit möchte ich Ihnen mitteilen...',
     placeholderClosing: 'Mit freundlichen Grüßen',
     placeholderSignatureName: 'Name unter der Unterschrift',
+    placeholderRecipientAddressSupplement: 'Adresszusatz',
     
     // Footer
     enableFooter: 'Aktivieren',
@@ -128,6 +130,7 @@ export const translations = {
     labelBody: 'Body Text',
     labelClosing: 'Closing',
     labelSignature: 'Signature Name',
+    labelRecipientAddressSupplement: 'Supplement to Recipient Address',
     
     // Placeholders
     placeholderName: 'John Doe',
@@ -143,6 +146,7 @@ export const translations = {
     placeholderBody: 'I would like to inform you...',
     placeholderClosing: 'Sincerely yours',
     placeholderSignatureName: 'Name below signature',
+    placeholderRecipientAddressSupplement: 'Supplement to Recipient Address',
     
     // Footer
     enableFooter: 'Enable',

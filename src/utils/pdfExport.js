@@ -59,18 +59,18 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
     const senderText = getSenderLine();
     if (senderText) {
       // Calculate if text needs wrapping and handle line spacing
-      const lineHeight = 9 * 1.15; // Font size * line height = 10.35pt ≈ 3.65mm
+      const lineHeight = 8 * 1.15; // Font size * line height = 9.2pt ≈ 3.25mm
       const maxHeight = SENDER_LINE.HEIGHT; // 17.7mm available
       const paddingBottom = 0.5; // 0.5mm padding from bottom
       
       // Check if text fits in one line
-      const textWidth = font.widthOfTextAtSize(senderText, 9);
+      const textWidth = font.widthOfTextAtSize(senderText, 8);
       const maxWidthPoints = mmToPoints(SENDER_LINE.WIDTH);
       
       if (textWidth <= maxWidthPoints) {
         // Single line: position at bottom with padding
-        const yPos = 62.7 - paddingBottom;
-        addText(senderText, SENDER_LINE.LEFT, yPos, 9, false);
+        const yPos = 62.7 - paddingBottom - 1.5; // Moved up 1.5mm
+        addText(senderText, SENDER_LINE.LEFT, yPos, 8, false);
       } else {
         // Two lines: wrap text and position from bottom up
         const words = senderText.split(' ');
@@ -80,7 +80,7 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
         // Try to fit first part in line 1
         for (let i = 0; i < words.length; i++) {
           const testLine = line1 ? `${line1} ${words[i]}` : words[i];
-          const testWidth = font.widthOfTextAtSize(testLine, 9);
+          const testWidth = font.widthOfTextAtSize(testLine, 8);
           
           if (testWidth <= maxWidthPoints || !line1) {
             line1 = testLine;
@@ -99,20 +99,20 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
         }
         
         // Position lines from bottom up
-        const lineHeightMm = 3.65; // Approximate line height in mm
+        const lineHeightMm = 3.25; // Approximate line height in mm
         
         // Line 2: closest to bottom
-        const line2Y = 62.7 - paddingBottom;
-        addText(line2, SENDER_LINE.LEFT, line2Y, 9, false);
+        const line2Y = 62.7 - paddingBottom - 1.5; // Moved up 1.5mm
+        addText(line2, SENDER_LINE.LEFT, line2Y, 8, false);
         
         // Line 1: above line 2
         const line1Y = line2Y - lineHeightMm;
-        addText(line1, SENDER_LINE.LEFT, line1Y, 9, false);
+        addText(line1, SENDER_LINE.LEFT, line1Y, 8, false);
       }
     }
     
     // Information Box (starts below 62.7mm from top, 125mm from left)
-    let infoY = 62.7 + 2; // Start below the address window with small offset
+    let infoY = 62.7 + 2 - 1.5; // Moved up 1.5mm
     if (letterData.senderPhone) {
       addText(`Telefon: ${letterData.senderPhone}`, INFO_BOX.LEFT, infoY, 9);
       infoY += 4;
@@ -121,6 +121,14 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       addText(`E-Mail: ${letterData.senderEmail}`, INFO_BOX.LEFT, infoY, 9);
       infoY += 4;
     }
+    
+    // Separator Line - Between Absender and Empfänger (62.7mm from top)
+    page.drawLine({
+      start: { x: mmToPoints(20), y: 841.89 - mmToPoints(62.7) },
+      end: { x: mmToPoints(110), y: 841.89 - mmToPoints(62.7) }, // Extended 5mm to the right (20mm + 90mm = 110mm)
+      thickness: mmToPoints(0.25),
+      color: rgb(0.82, 0.82, 0.82)
+    });
     
     // Date (90mm from top, right aligned with proper margin)
     if (letterData.date) {
@@ -194,6 +202,9 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       
       if (letterData.recipientName) {
         addAddressField(letterData.recipientName, true);
+      }
+      if (letterData.recipientAddressSupplement) {
+        addAddressField(letterData.recipientAddressSupplement, false);
       }
       if (letterData.recipientStreet) {
         addAddressField(letterData.recipientStreet, false);
@@ -645,18 +656,18 @@ export async function printAsPDF(letterData) {
     const senderText = getSenderLine();
     if (senderText) {
       // Calculate if text needs wrapping and handle line spacing
-      const lineHeight = 9 * 1.15; // Font size * line height = 10.35pt ≈ 3.65mm
+      const lineHeight = 8 * 1.15; // Font size * line height = 9.2pt ≈ 3.25mm
       const maxHeight = SENDER_LINE.HEIGHT; // 17.7mm available
       const paddingBottom = 0.5; // 0.5mm padding from bottom
       
       // Check if text fits in one line
-      const textWidth = font.widthOfTextAtSize(senderText, 9);
+      const textWidth = font.widthOfTextAtSize(senderText, 8);
       const maxWidthPoints = mmToPoints(SENDER_LINE.WIDTH);
       
       if (textWidth <= maxWidthPoints) {
         // Single line: position at bottom with padding
         const yPos = 62.7 - paddingBottom;
-        addText(senderText, SENDER_LINE.LEFT, yPos, 9, false);
+        addText(senderText, SENDER_LINE.LEFT, yPos, 8, false);
       } else {
         // Two lines: wrap text and position from bottom up
         const words = senderText.split(' ');
@@ -666,7 +677,7 @@ export async function printAsPDF(letterData) {
         // Try to fit first part in line 1
         for (let i = 0; i < words.length; i++) {
           const testLine = line1 ? `${line1} ${words[i]}` : words[i];
-          const testWidth = font.widthOfTextAtSize(testLine, 9);
+          const testWidth = font.widthOfTextAtSize(testLine, 8);
           
           if (testWidth <= maxWidthPoints || !line1) {
             line1 = testLine;
@@ -685,20 +696,20 @@ export async function printAsPDF(letterData) {
         }
         
         // Position lines from bottom up
-        const lineHeightMm = 3.65; // Approximate line height in mm
+        const lineHeightMm = 3.25; // Approximate line height in mm
         
         // Line 2: closest to bottom
         const line2Y = 62.7 - paddingBottom;
-        addText(line2, SENDER_LINE.LEFT, line2Y, 9, false);
+        addText(line2, SENDER_LINE.LEFT, line2Y, 8, false);
         
         // Line 1: above line 2
         const line1Y = line2Y - lineHeightMm;
-        addText(line1, SENDER_LINE.LEFT, line1Y, 9, false);
+        addText(line1, SENDER_LINE.LEFT, line1Y, 8, false);
       }
     }
     
     // Information Box (starts below 62.7mm from top, 125mm from left)
-    let infoY = 62.7 + 2; // Start below the address window with small offset
+    let infoY = 62.7 + 2 - 1.5; // Moved up 1.5mm
     if (letterData.senderPhone) {
       addText(`Telefon: ${letterData.senderPhone}`, INFO_BOX.LEFT, infoY, 9);
       infoY += 4;
@@ -706,6 +717,14 @@ export async function printAsPDF(letterData) {
     if (letterData.senderEmail) {
       addText(`E-Mail: ${letterData.senderEmail}`, INFO_BOX.LEFT, infoY, 9);
     }
+    
+    // Separator Line - Between Absender and Empfänger (62.7mm from top)
+    page.drawLine({
+      start: { x: mmToPoints(20), y: 841.89 - mmToPoints(62.7) },
+      end: { x: mmToPoints(105), y: 841.89 - mmToPoints(62.7) }, // 20mm + 85mm = 105mm
+      thickness: mmToPoints(0.25),
+      color: rgb(0.82, 0.82, 0.82)
+    });
     
     // Address Window (45mm from top, 25mm from left, 85mm width, 45mm height)
     if (letterData.recipientName || letterData.recipientStreet || letterData.recipientCity) {
@@ -771,6 +790,9 @@ export async function printAsPDF(letterData) {
       
       if (letterData.recipientName) {
         addAddressField(letterData.recipientName, true);
+      }
+      if (letterData.recipientAddressSupplement) {
+        addAddressField(letterData.recipientAddressSupplement, false);
       }
       if (letterData.recipientStreet) {
         addAddressField(letterData.recipientStreet, false);

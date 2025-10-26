@@ -51,6 +51,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       supervisoryBoard: CHAR_LIMITS.supervisoryBoard,
       registrationCourt: CHAR_LIMITS.registrationCourt,
       hrbNumber: CHAR_LIMITS.hrbNumber,
+      recipientAddressSupplement: CHAR_LIMITS.recipientAddressSupplement,
     };
     return limits[field];
   };
@@ -67,8 +68,9 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
     const limit = getFieldLimit(field);
     if (!limit) return null;
     const remaining = limit - value.length;
-    // Don't show orange warning for date field
-    const isNearLimit = remaining < 20 && field !== 'date';
+    // Don't show orange warning for date field and sender fields
+    const senderFields = ['senderName', 'senderStreet', 'senderCity', 'senderPhone', 'senderEmail'];
+    const isNearLimit = remaining < 20 && field !== 'date' && !senderFields.includes(field);
     return (
       <div className={`text-[10px] mt-0.5 text-right ${isNearLimit ? 'text-orange-600' : 'text-slate-400'}`}>
         {value.length} / {limit}
@@ -87,6 +89,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       recipientName: 'Beispiel GmbH',
       recipientStreet: 'Beispielstraße 456',
       recipientCity: '54321 Beispielstadt',
+      recipientAddressSupplement: 'Hinter dem Tor',
       subject: 'Betreff: Testbrief',
       body: 'vielen Dank für Ihr Interesse an unseren Dienstleistungen.',
       salutation: 'Sehr geehrte Damen und Herren,',
@@ -106,6 +109,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       recipientName: '',
       recipientStreet: '',
       recipientCity: '',
+      recipientAddressSupplement: '',
       subject: '',
       body: '',
       salutation: prev.salutation, // Keep current salutation
@@ -123,7 +127,8 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       managingDirectors: '',
       supervisoryBoard: '',
       registrationCourt: '',
-      hrbNumber: ''
+      hrbNumber: '',
+      recipientAddressSupplement: '',
     }));
   };
 
@@ -223,6 +228,18 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               maxLength={CHAR_LIMITS.recipientName}
             />
             {renderCharCounter('recipientName', letterData.recipientName)}
+          </div>
+          <div>
+            <Label htmlFor="recipientAddressSupplement" className="text-xs font-medium text-slate-600">{t.labelRecipientAddressSupplement}</Label>
+            <Input
+              id="recipientAddressSupplement"
+              value={letterData.recipientAddressSupplement || ''}
+              onChange={(e) => handleChange('recipientAddressSupplement', e.target.value)}
+              placeholder={t.placeholderRecipientAddressSupplement}
+              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
+              maxLength={CHAR_LIMITS.recipientAddressSupplement}
+            />
+            {renderCharCounter('recipientAddressSupplement', letterData.recipientAddressSupplement || '')}
           </div>
           <div>
             <Label htmlFor="recipientStreet" className="text-xs font-medium text-slate-600">{t.labelStreet}</Label>
