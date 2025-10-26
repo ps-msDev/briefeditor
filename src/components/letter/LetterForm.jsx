@@ -67,8 +67,9 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
     const limit = getFieldLimit(field);
     if (!limit) return null;
     const remaining = limit - value.length;
-    // Don't show orange warning for date field
-    const isNearLimit = remaining < 20 && field !== 'date';
+    // Don't show orange warning for date field and sender fields
+    const senderFields = ['senderName', 'senderStreet', 'senderCity', 'senderPhone', 'senderEmail'];
+    const isNearLimit = remaining < 20 && field !== 'date' && !senderFields.includes(field);
     return (
       <div className={`text-[10px] mt-0.5 text-right ${isNearLimit ? 'text-orange-600' : 'text-slate-400'}`}>
         {value.length} / {limit}
