@@ -55,6 +55,9 @@ export default function LetterPreview({ letterData, translations: t }) {
           .din-9pt {
             font-size: clamp(7px, 1.3vw, 9pt);
           }
+          .din-8pt {
+            font-size: clamp(6.5px, 1.2vw, 8pt);
+          }
           .din-address-main {
             font-size: clamp(7.5px, 1.4vw, 10pt);
           }
@@ -66,6 +69,9 @@ export default function LetterPreview({ letterData, translations: t }) {
           }
           .din-9pt {
             font-size: 9pt;
+          }
+          .din-8pt {
+            font-size: 8pt;
           }
           .din-address-main {
             font-size: 10pt;
@@ -201,7 +207,7 @@ export default function LetterPreview({ letterData, translations: t }) {
               {/* Sender Block - Screen uses %, print uses mm */}
               {getSenderLine() && (
                 <>
-                  <div className="din-9pt absolute print:hidden flex items-end" style={{ 
+                  <div className="din-8pt absolute print:hidden flex items-end" style={{ 
                     top: '15.15%',
                     left: '11.9%',
                     width: '40.48%',
@@ -210,7 +216,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                   }}>
                     {getSenderLine()}
                   </div>
-                  <div className="din-9pt absolute hidden print:flex items-end" style={{ 
+                  <div className="din-8pt absolute hidden print:flex items-end" style={{ 
                     top: '45mm',
                     left: '25mm',
                     width: '85mm',
@@ -256,11 +262,27 @@ export default function LetterPreview({ letterData, translations: t }) {
                 )}
               </div>
               
+              {/* Separator Line - Between Absender and Empfänger */}
+              <div className="absolute print:hidden" style={{ 
+                top: '21.11%',
+                left: '9.52%',
+                width: '42.86%',
+                height: '0.5px',
+                backgroundColor: '#d1d5db'
+              }} />
+              <div className="absolute hidden print:block" style={{ 
+                top: '62.7mm',
+                left: '20mm',
+                width: '90mm',
+                height: '0.25pt',
+                backgroundColor: '#d1d5db'
+              }} />
+              
               {/* Recipient Address - Screen uses %, print uses mm */}
               {letterData.recipientName && (
                 <>
                   <div className="din-address-main absolute print:hidden" style={{ 
-                    top: '21.11%',
+                    top: '22.11%',
                     left: '11.9%',
                     width: '40.48%',
                     maxHeight: '9.19%'
