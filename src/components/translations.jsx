@@ -82,6 +82,7 @@ export const translations = {
     // Info Box
     infoBoxTitle: 'DIN 5008 - Form B',
     infoBoxText: 'Dieser Brief orientiert sich an den offiziellen deutschen Geschäftsbrief-Standards (DIN 5008 - Form B, Stand März 2020). Perfekt für Fensterumschläge (C6/5 oder DL) geeignet. Keine Garantie',
+    infoBoxButton: 'Mehr Infos zur DIN5008',
     
     // Preview
     previewEmpty: 'Ihr DIN 5008 Brief',
@@ -170,6 +171,7 @@ export const translations = {
     // Info Box
     infoBoxTitle: 'DIN 5008 - Type B',
     infoBoxText: 'This letter follows the official German business letter standards (DIN 5008 - Type B, March 2020). Perfect for window envelopes (C6/5 or DL). No guarantee.',
+    infoBoxButton: 'More Info on DIN5008',
     
     // Preview
     previewEmpty: 'Your DIN 5008 Letter',

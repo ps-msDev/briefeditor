@@ -136,7 +136,7 @@ export default function LetterWriter() {
             
             {/* Right: Action Buttons - Hidden on mobile */}
             <div className="hidden lg:flex items-center gap-2">
-              <DIN5008InfoDialog language={language} />
+              <DIN5008InfoDialog language={language} translations={t} />
               <div className="h-6 w-px bg-slate-300"></div>
               <div className="flex items-center gap-2">
                 <Button 
@@ -243,9 +243,13 @@ export default function LetterWriter() {
           </div>
         </div>
 
-        {/* DIN 5008 Info Button - Mobile Only */}
-        <div className="lg:hidden mt-4">
-          <DIN5008InfoDialog language={language} />
+        {/* DIN 5008 Info Box - Mobile Only */}
+        <div className="lg:hidden mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 text-xs text-slate-600">
+          <p className="font-medium text-slate-900 mb-1">{t.infoBoxTitle}</p>
+          <p className="mb-3">{t.infoBoxText}</p>
+          <div className="flex justify-end">
+            <DIN5008InfoDialog language={language} translations={t} />
+          </div>
         </div>
 
         {/* Legal Information - Responsive Footer */}

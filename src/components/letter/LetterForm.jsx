@@ -452,11 +452,6 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
         )}
       </Card>
 
-      {/* Info Box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-xs text-slate-600">
-        <p className="font-medium text-slate-900 mb-1">{t.infoBoxTitle}</p>
-        <p>{t.infoBoxText}</p>
-      </div>
 
       {/* Visual Guides */}
       <Card className="border-slate-200 shadow-sm">
