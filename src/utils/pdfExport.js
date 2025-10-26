@@ -107,26 +107,45 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
     }
     
     // Body Text (156mm from top) - Handle line breaks like preview
+    // Follow official guidelines: 2 blank lines after body, then 3-4 blank lines for signature
+    const normalLineHeight = 4; // 4mm normal line height
+    const closingSpacing = normalLineHeight * 2.5; // 2.5x normal spacing = 10mm
+    const signatureSpacing = normalLineHeight * 3.5; // 3.5x normal spacing = 14mm
+    const footerBoxStart = 262; // Footer box starts at 262mm
+    
+    let lastBodyY = BODY.TOP;
+    
     if (letterData.body) {
       const bodyLines = letterData.body.split('\n');
       let bodyY = BODY.TOP;
       const lineHeight = 11 * TYPOGRAPHY.LINE_HEIGHT; // 11pt * 1.15 = 12.65pt
+      const lineHeightMm = lineHeight / 2.834645669; // Convert back to mm for positioning
+      
       bodyLines.forEach(line => {
         if (line.trim()) {
-          addText(line, BODY.LEFT, bodyY, 11, false, 165);
-          bodyY += lineHeight / 2.834645669; // Convert back to mm for positioning
+          // Check if adding this line would exceed footer start
+          if (bodyY + lineHeightMm + closingSpacing + signatureSpacing <= footerBoxStart) {
+            addText(line, BODY.LEFT, bodyY, 11, false, 165);
+            bodyY += lineHeightMm;
+            lastBodyY = bodyY;
+          }
+          // Stop rendering if we would exceed the limit
         }
       });
     }
     
-    // Closing (45mm from bottom)
+    // Closing and Signature - Positioned after body text with proper spacing
+    // Closing: 2 blank lines after last paragraph
+    // Signature: 3-4 blank lines below closing phrase
+    const closingY = lastBodyY + closingSpacing;
+    const signatureY = closingY + signatureSpacing;
+    
     if (letterData.closing) {
-      // Calculate from bottom: A4 height (297mm) - bottom margin (45mm) = 252mm from top
-      addText(letterData.closing, CLOSING.LEFT, 252, 11, false, 165);
-      if (letterData.signatureName) {
-        // Signature 15mm below closing
-        addText(letterData.signatureName, CLOSING.LEFT, 267, 11, false, 165);
-      }
+      addText(letterData.closing, CLOSING.LEFT, closingY, 11, false, 165);
+    }
+    
+    if (letterData.signatureName) {
+      addText(letterData.signatureName, CLOSING.LEFT, signatureY, 11, false, 165);
     }
     
     // Footer Box (1cm from bottom, 2.5cm height)
