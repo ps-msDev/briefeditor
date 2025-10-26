@@ -1,6 +1,11 @@
 # 📝 BriefEditor
 
-> **A modern, privacy-focused letter editor for DIN 5008 compliant business correspondence**
+BriefEditor is a minimalist web app for quickly writing professional letters in accordance with DIN 5008.
+
+No Word, no style sheets, no hours spent moving text boxes around – simply enter the sender, recipient, subject and message, immediately see the finished A4 layout and download it as a PDF.
+
+Ideal when you need to send an official letter – clearly structured, neatly formatted and ready to print.
+
 
 [![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/ps-msDev/briefeditor)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
