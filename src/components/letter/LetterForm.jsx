@@ -37,7 +37,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t 
       recipientStreet: 'Beispielstraße 456',
       recipientCity: '54321 Beispielstadt',
       subject: 'Betreff: Testbrief',
-      body: 'vielen Dank für Ihr Interesse an unseren Dienstleistungen.\n\nMit freundlichen Grüßen',
+      body: 'vielen Dank für Ihr Interesse an unseren Dienstleistungen.',
       salutation: 'Sehr geehrte Damen und Herren,',
       closing: 'Mit freundlichen Grüßen',
       signatureName: 'Max Mustermann'
