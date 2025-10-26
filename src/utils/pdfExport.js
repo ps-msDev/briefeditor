@@ -195,6 +195,9 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       if (letterData.recipientName) {
         addAddressField(letterData.recipientName, true);
       }
+      if (letterData.recipientAddressSupplement) {
+        addAddressField(letterData.recipientAddressSupplement, false);
+      }
       if (letterData.recipientStreet) {
         addAddressField(letterData.recipientStreet, false);
       }
@@ -771,6 +774,9 @@ export async function printAsPDF(letterData) {
       
       if (letterData.recipientName) {
         addAddressField(letterData.recipientName, true);
+      }
+      if (letterData.recipientAddressSupplement) {
+        addAddressField(letterData.recipientAddressSupplement, false);
       }
       if (letterData.recipientStreet) {
         addAddressField(letterData.recipientStreet, false);

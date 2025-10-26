@@ -266,6 +266,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                     maxHeight: '9.19%'
                   }}>
                     <div className="font-semibold">{letterData.recipientName}</div>
+                    {letterData.recipientAddressSupplement && <div>{letterData.recipientAddressSupplement}</div>}
                     {letterData.recipientStreet && <div>{letterData.recipientStreet}</div>}
                     {letterData.recipientCity && <div>{letterData.recipientCity}</div>}
                   </div>
@@ -276,6 +277,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                     maxHeight: '27.3mm'
                   }}>
                     <div className="font-semibold">{letterData.recipientName}</div>
+                    {letterData.recipientAddressSupplement && <div>{letterData.recipientAddressSupplement}</div>}
                     {letterData.recipientStreet && <div>{letterData.recipientStreet}</div>}
                     {letterData.recipientCity && <div>{letterData.recipientCity}</div>}
                   </div>

@@ -7,6 +7,7 @@ export const CHAR_LIMITS = {
   
   // Recipient Info (displayed as separate lines)
   recipientName: 50,      // Recipient name (single line)
+  recipientAddressSupplement: 80,  // Recipient address supplement (Adresszusatz) - between name and street
   recipientStreet: 50,    // Recipient street (single line)
   recipientCity: 50,      // Recipient city (single line)
   
