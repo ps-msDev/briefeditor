@@ -2,7 +2,7 @@
 
 A minimalist web application for creating DIN 5008 compliant business letters. No Word, no formatting headaches – just clean, professional correspondence.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/ps-msDev/briefeditor)
+[![Version](https://img.shields.io/github/package-json/v/ps-msDev/briefeditor)](https://github.com/ps-msDev/briefeditor)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/demo-live-orange.svg)](https://www.briefeditor.eu/)
 
