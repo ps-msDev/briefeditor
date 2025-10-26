@@ -24,12 +24,12 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
 
   const getFieldLimit = (field) => {
     const limits = {
-      senderName: CHAR_LIMITS.name,
-      recipientName: CHAR_LIMITS.name,
-      senderStreet: CHAR_LIMITS.street,
-      recipientStreet: CHAR_LIMITS.street,
-      senderCity: CHAR_LIMITS.city,
-      recipientCity: CHAR_LIMITS.city,
+      senderName: CHAR_LIMITS.senderName,
+      recipientName: CHAR_LIMITS.recipientName,
+      senderStreet: CHAR_LIMITS.senderStreet,
+      recipientStreet: CHAR_LIMITS.recipientStreet,
+      senderCity: CHAR_LIMITS.senderCity,
+      recipientCity: CHAR_LIMITS.recipientCity,
       senderPhone: CHAR_LIMITS.phone,
       senderEmail: CHAR_LIMITS.email,
       date: CHAR_LIMITS.date,
@@ -146,7 +146,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('senderName', e.target.value)}
               placeholder={t.placeholderName}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.name}
+              maxLength={CHAR_LIMITS.senderName}
             />
             {renderCharCounter('senderName', letterData.senderName)}
           </div>
@@ -158,7 +158,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('senderStreet', e.target.value)}
               placeholder={t.placeholderStreet}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.street}
+              maxLength={CHAR_LIMITS.senderStreet}
             />
             {renderCharCounter('senderStreet', letterData.senderStreet)}
           </div>
@@ -170,7 +170,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('senderCity', e.target.value)}
               placeholder={t.placeholderCity}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.city}
+              maxLength={CHAR_LIMITS.senderCity}
             />
             {renderCharCounter('senderCity', letterData.senderCity)}
           </div>
@@ -220,7 +220,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('recipientName', e.target.value)}
               placeholder={t.placeholderRecipient}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.name}
+              maxLength={CHAR_LIMITS.recipientName}
             />
             {renderCharCounter('recipientName', letterData.recipientName)}
           </div>
@@ -232,7 +232,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('recipientStreet', e.target.value)}
               placeholder={t.placeholderRecipientStreet}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.street}
+              maxLength={CHAR_LIMITS.recipientStreet}
             />
             {renderCharCounter('recipientStreet', letterData.recipientStreet)}
           </div>
@@ -244,7 +244,7 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
               onChange={(e) => handleChange('recipientCity', e.target.value)}
               placeholder={t.placeholderRecipientCity}
               className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-              maxLength={CHAR_LIMITS.city}
+              maxLength={CHAR_LIMITS.recipientCity}
             />
             {renderCharCounter('recipientCity', letterData.recipientCity)}
           </div>

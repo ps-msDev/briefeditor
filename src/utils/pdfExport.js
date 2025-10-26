@@ -55,10 +55,60 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
     };
     
     // Sender Line (45mm from top, 25mm from left, 85mm width)
-    // Bottom-aligned to 62.7mm from top with padding
+    // Bottom-aligned to 62.7mm from top with proper spacing
     const senderText = getSenderLine();
     if (senderText) {
-      addText(senderText, SENDER_LINE.LEFT, 62.7 - 2, 9, false, SENDER_LINE.WIDTH); // 1mm padding from bottom
+      // Calculate if text needs wrapping and handle line spacing
+      const lineHeight = 9 * 1.15; // Font size * line height = 10.35pt ≈ 3.65mm
+      const maxHeight = SENDER_LINE.HEIGHT; // 17.7mm available
+      const paddingBottom = 0.5; // 0.5mm padding from bottom
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(senderText, 9);
+      const maxWidthPoints = mmToPoints(SENDER_LINE.WIDTH);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line: position at bottom with padding
+        const yPos = 62.7 - paddingBottom;
+        addText(senderText, SENDER_LINE.LEFT, yPos, 9, false);
+      } else {
+        // Two lines: wrap text and position from bottom up
+        const words = senderText.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        // Try to fit first part in line 1
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 9);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            // Rest goes to line 2
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Position lines from bottom up
+        const lineHeightMm = 3.65; // Approximate line height in mm
+        
+        // Line 2: closest to bottom
+        const line2Y = 62.7 - paddingBottom;
+        addText(line2, SENDER_LINE.LEFT, line2Y, 9, false);
+        
+        // Line 1: above line 2
+        const line1Y = line2Y - lineHeightMm;
+        addText(line1, SENDER_LINE.LEFT, line1Y, 9, false);
+      }
     }
     
     // Information Box (starts below 62.7mm from top, 125mm from left)
@@ -81,49 +131,198 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       addText(dateText, dateX, DATE.TOP, 11);
     }
     
-    // Recipient Address (62.7mm from top, 25mm from left, 85mm width)
-    // Start at the top of the address window (62.7mm) + small offset for text baseline
-    let addressY = ADDRESS_WINDOW.TOP + 3;
-    if (letterData.recipientName) {
-      addText(letterData.recipientName, ADDRESS_WINDOW.LEFT, addressY, 10, true, ADDRESS_WINDOW.WIDTH);
-      addressY += 4;
-    }
-    if (letterData.recipientStreet) {
-      addText(letterData.recipientStreet, ADDRESS_WINDOW.LEFT, addressY, 10, false, ADDRESS_WINDOW.WIDTH);
-      addressY += 4;
-    }
-    if (letterData.recipientCity) {
-      addText(letterData.recipientCity, ADDRESS_WINDOW.LEFT, addressY, 10, false, ADDRESS_WINDOW.WIDTH);
+    // Define spacing constants (DIN 5008 compliant with better visual spacing)
+    const lineHeight11pt = 11 * 1.15; // 11pt font line height
+    const lineHeightMm = lineHeight11pt / 2.834645669; // ≈ 4.46mm per blank line
+    const blankLines1 = lineHeightMm * 1.5; // 1.5x for better visual spacing (≈6.7mm)
+    const blankLines2 = lineHeightMm * 3; // 3x for better visual spacing (≈13.4mm)
+    
+    // Track end position of each section for proper spacing
+    let lastSectionEndY = ADDRESS_WINDOW.TOP + 4; // Start position
+    let currentY;
+    
+    // Recipient Address - Handle wrapping manually for proper spacing
+    if (letterData.recipientName || letterData.recipientStreet || letterData.recipientCity) {
+      currentY = lastSectionEndY;
+      const lineHeight = 10 * 1.15; // 10pt * 1.15 = 11.5pt
+      const lineHeightMm = lineHeight / 2.834645669; // Convert to mm (≈ 4.06mm)
+      const maxWidthPoints = mmToPoints(ADDRESS_WINDOW.WIDTH);
+      
+      // Helper to add a field with proper wrapping
+      const addAddressField = (text, isBold) => {
+        if (!text) return;
+        
+        // Check if text fits in one line
+        const textWidth = (isBold ? boldFont : font).widthOfTextAtSize(text, 10);
+        
+        if (textWidth <= maxWidthPoints) {
+          // Single line
+          addText(text, ADDRESS_WINDOW.LEFT, currentY, 10, isBold);
+          currentY += lineHeightMm;
+        } else {
+          // Split into two lines
+          const words = text.split(' ');
+          let line1 = '';
+          let line2 = '';
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+            const testWidth = (isBold ? boldFont : font).widthOfTextAtSize(testLine, 10);
+            
+            if (testWidth <= maxWidthPoints || !line1) {
+              line1 = testLine;
+            } else {
+              line2 = words.slice(i).join(' ');
+              break;
+            }
+          }
+          
+          // If all fits in line 1, split in middle
+          if (!line2) {
+            const midPoint = Math.floor(words.length / 2);
+            line1 = words.slice(0, midPoint).join(' ');
+            line2 = words.slice(midPoint).join(' ');
+          }
+          
+          // Render both lines
+          addText(line1, ADDRESS_WINDOW.LEFT, currentY, 10, isBold);
+          currentY += lineHeightMm;
+          addText(line2, ADDRESS_WINDOW.LEFT, currentY, 10, isBold);
+          currentY += lineHeightMm;
+        }
+      };
+      
+      if (letterData.recipientName) {
+        addAddressField(letterData.recipientName, true);
+      }
+      if (letterData.recipientStreet) {
+        addAddressField(letterData.recipientStreet, false);
+      }
+      if (letterData.recipientCity) {
+        addAddressField(letterData.recipientCity, false);
+      }
+      
+      lastSectionEndY = currentY;
     }
     
-    // Subject Line (125mm from top)
+    // Subject Line - Use fixed position (original behavior)
     if (letterData.subject) {
-      addText(letterData.subject, SUBJECT.LEFT, SUBJECT.TOP, 11, true, 165);
+      const subjectLineHeightMm = lineHeightMm;
+      const maxWidthPoints = mmToPoints(165);
+      // Start at fixed SUBJECT.TOP position
+      currentY = SUBJECT.TOP;
+      
+      // Check if text fits in one line
+      const textWidth = boldFont.widthOfTextAtSize(letterData.subject, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.subject, SUBJECT.LEFT, currentY, 11, true);
+        currentY += subjectLineHeightMm;
+      } else {
+        // Split into two lines
+        const words = letterData.subject.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = boldFont.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, SUBJECT.LEFT, currentY, 11, true);
+        currentY += subjectLineHeightMm;
+        addText(line2, SUBJECT.LEFT, currentY, 11, true);
+        currentY += subjectLineHeightMm;
+      }
+      
+      lastSectionEndY = currentY;
     }
     
-    // Salutation (143mm from top)
+    // Salutation - Position after subject with 2 blank lines (DIN 5008: 2 blank lines between subject and salutation)
     if (letterData.salutation) {
-      addText(letterData.salutation, SALUTATION.LEFT, SALUTATION.TOP, 11, false, 165);
+      const salutationLineHeightMm = lineHeightMm;
+      const maxWidthPoints = mmToPoints(165);
+      // Start 2 blank lines after subject (or after address if no subject)
+      currentY = lastSectionEndY + blankLines2;
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(letterData.salutation, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.salutation, SALUTATION.LEFT, currentY, 11, false);
+        currentY += salutationLineHeightMm;
+      } else {
+        // Split into two lines
+        const words = letterData.salutation.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, SALUTATION.LEFT, currentY, 11, false);
+        currentY += salutationLineHeightMm;
+        addText(line2, SALUTATION.LEFT, currentY, 11, false);
+        currentY += salutationLineHeightMm;
+      }
+      
+      lastSectionEndY = currentY;
     }
     
-    // Body Text (156mm from top) - Handle line breaks exactly like preview
-    // Follow official guidelines: 2 blank lines after body, then 3-4 blank lines for signature
-    const normalLineHeight = 4; // 4mm normal line height
-    const closingSpacing = normalLineHeight * 2.5; // 2.5x normal spacing = 10mm
-    const signatureSpacing = normalLineHeight * 3.5; // 3.5x normal spacing = 14mm
+    // Body Text - Start after salutation with 1 blank line (DIN 5008: 1 blank line between salutation and body)
+    // Follow official guidelines: 1 blank line after body, then 2 blank lines for signature
     const footerBoxStart = 262; // Footer box starts at 262mm
     
-    let lastBodyY = BODY.TOP;
+    // Start body 1 blank line after salutation (or after address if no salutation)
+    if (!lastSectionEndY) {
+      lastSectionEndY = ADDRESS_WINDOW.TOP + 4;
+    }
+    const bodyStartY = lastSectionEndY + blankLines1; // 1 blank line after salutation
+    let lastBodyY = bodyStartY;
     
     if (letterData.body) {
       const bodyLines = letterData.body.split('\n');
-      let bodyY = BODY.TOP;
+      let bodyY = bodyStartY;
       const lineHeight = 11 * TYPOGRAPHY.LINE_HEIGHT; // 11pt * 1.15 = 12.65pt
       const lineHeightMm = lineHeight / 2.834645669; // Convert back to mm for positioning
       
       bodyLines.forEach(line => {
-        // Check if adding this line would exceed footer start
-        if (bodyY + lineHeightMm + closingSpacing + signatureSpacing <= footerBoxStart) {
+        // Check if adding this line would exceed footer start (account for closing and signature spacing)
+        if (bodyY + lineHeightMm + blankLines1 + blankLines2 <= footerBoxStart) {
           if (line.trim()) {
             // Non-empty line - render the text with word wrapping
             // Split long lines into multiple lines if needed
@@ -144,7 +343,7 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
                 currentLine = word;
                 
                 // Check if we still have space
-                if (bodyY + lineHeightMm + closingSpacing + signatureSpacing > footerBoxStart) {
+                if (bodyY + lineHeightMm + blankLines1 + blankLines2 > footerBoxStart) {
                   return; // Stop rendering
                 }
               }
@@ -163,18 +362,67 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       });
     }
     
-    // Closing and Signature - Positioned after body text with proper spacing
-    // Closing: 2 blank lines after last paragraph
-    // Signature: 3-4 blank lines below closing phrase
-    const closingY = lastBodyY + closingSpacing;
-    const signatureY = closingY + signatureSpacing;
+    // Closing and Signature - Positioned after body text with proper spacing (DIN 5008 compliant)
+    // Closing: 1 blank line after body text
+    // Signature: 2 blank lines below closing phrase
+    const bodyLineHeight11pt = 11 * TYPOGRAPHY.LINE_HEIGHT; // 11pt * 1.15 = 12.65pt
+    const bodyLineHeightMm = bodyLineHeight11pt / 2.834645669; // Convert to mm
+    
+    // Add 1 blank line after body (lastBodyY is at end of last body line, we add 1 line height for spacing)
+    const closingY = lastBodyY + bodyLineHeightMm;
+    let closingEndY = closingY;
     
     if (letterData.closing) {
       addText(letterData.closing, CLOSING.LEFT, closingY, 11, false, 165);
+      closingEndY = closingY + bodyLineHeightMm; // Account for closing text taking up space
     }
     
+    // Signature: 2 blank lines after closing ends
+    const signatureY = closingEndY + blankLines2;
+    
+    // Signature Name - Handle wrapping manually
     if (letterData.signatureName) {
-      addText(letterData.signatureName, CLOSING.LEFT, signatureY, 11, false, 165);
+      const sigLineHeight = 11 * 1.15; // 11pt * 1.15 = 12.65pt
+      const sigLineHeightMm = sigLineHeight / 2.834645669; // Convert to mm
+      const maxWidthPoints = mmToPoints(165); // 165mm width
+      let sigY = signatureY;
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(letterData.signatureName, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.signatureName, CLOSING.LEFT, sigY, 11, false);
+      } else {
+        // Split into two lines
+        const words = letterData.signatureName.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, CLOSING.LEFT, sigY, 11, false);
+        sigY += sigLineHeightMm;
+        addText(line2, CLOSING.LEFT, sigY, 11, false);
+      }
     }
     
     // Footer Box (1cm from bottom, 2.5cm height)
@@ -197,18 +445,51 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       // Collect all footer lines
       const footerLines = [];
       
-      // Add footer text lines
+      // Add footer text lines with proper wrapping (size 8 like legal info)
       if (hasFooter) {
+        const text = letterData.footerText;
         const alignment = letterData.footerAlignment || 'center';
-        let footerX = 25; // Default left alignment
         
-        if (alignment === 'center') {
-          footerX = 25 + (170 - letterData.footerText.length * 2) / 2; // Rough centering
-        } else if (alignment === 'right') {
-          footerX = 25 + 170 - letterData.footerText.length * 2; // Rough right alignment
+        // Manually wrap text exactly like legal info
+        const words = text.split(' ');
+        let line = '';
+        const wrappedLines = [];
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line ? `${line} ${words[i]}` : words[i];
+          const width = font.widthOfTextAtSize(testLine, 8);
+          
+          if (width <= mmToPoints(170) || !line) {
+            line = testLine;
+          } else {
+            wrappedLines.push(line);
+            line = words[i];
+          }
         }
         
-        footerLines.push({ text: letterData.footerText, x: footerX, size: 9, isFooter: true });
+        // Add the last line
+        if (line) {
+          wrappedLines.push(line);
+        }
+        
+        // Calculate x position based on alignment for each line
+        wrappedLines.forEach(wrappedLine => {
+          let footerX = 25; // Default left alignment
+          
+          if (alignment === 'center') {
+            // Calculate text width in points and center it
+            const textWidth = font.widthOfTextAtSize(wrappedLine, 8);
+            const textWidthMm = textWidth / 2.834645669;
+            footerX = 25 + (170 - textWidthMm) / 2;
+          } else if (alignment === 'right') {
+            // Calculate text width and align right
+            const textWidth = font.widthOfTextAtSize(wrappedLine, 8);
+            const textWidthMm = textWidth / 2.834645669;
+            footerX = 25 + 170 - textWidthMm;
+          }
+          
+          footerLines.push({ text: wrappedLine, x: footerX, size: 8, isFooter: true });
+        });
       }
       
       // Add legal information lines (wrapped)
@@ -262,8 +543,8 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       for (let i = totalLines - 1; i >= 0; i--) {
         addText(footerLines[i].text, footerLines[i].x, currentY, footerLines[i].size, false);
         if (i > 0) {
-          // Add extra spacing between footer text and legal information
-          const extraSpacing = footerLines[i-1].isFooter ? 2 : 0; // 2mm extra spacing after footer text
+          // Add spacing between footer text and legal information (2mm only between different sections)
+          const extraSpacing = (footerLines[i].isFooter !== footerLines[i-1].isFooter) ? 2 : 0;
           currentY -= (lineSpacing + extraSpacing);
         }
       }
@@ -360,10 +641,60 @@ export async function printAsPDF(letterData) {
     };
     
     // Sender Line (45mm from top, 25mm from left, 85mm width)
-    // Bottom-aligned to 62.7mm from top with padding
+    // Bottom-aligned to 62.7mm from top with proper spacing
     const senderText = getSenderLine();
     if (senderText) {
-      addText(senderText, SENDER_LINE.LEFT, 62.7 - 2, 9, false, SENDER_LINE.WIDTH); // 1mm padding from bottom
+      // Calculate if text needs wrapping and handle line spacing
+      const lineHeight = 9 * 1.15; // Font size * line height = 10.35pt ≈ 3.65mm
+      const maxHeight = SENDER_LINE.HEIGHT; // 17.7mm available
+      const paddingBottom = 0.5; // 0.5mm padding from bottom
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(senderText, 9);
+      const maxWidthPoints = mmToPoints(SENDER_LINE.WIDTH);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line: position at bottom with padding
+        const yPos = 62.7 - paddingBottom;
+        addText(senderText, SENDER_LINE.LEFT, yPos, 9, false);
+      } else {
+        // Two lines: wrap text and position from bottom up
+        const words = senderText.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        // Try to fit first part in line 1
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 9);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            // Rest goes to line 2
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Position lines from bottom up
+        const lineHeightMm = 3.65; // Approximate line height in mm
+        
+        // Line 2: closest to bottom
+        const line2Y = 62.7 - paddingBottom;
+        addText(line2, SENDER_LINE.LEFT, line2Y, 9, false);
+        
+        // Line 1: above line 2
+        const line1Y = line2Y - lineHeightMm;
+        addText(line1, SENDER_LINE.LEFT, line1Y, 9, false);
+      }
     }
     
     // Information Box (starts below 62.7mm from top, 125mm from left)
@@ -388,18 +719,64 @@ export async function printAsPDF(letterData) {
         borderWidth: mmToPoints(0.25)
       });
       
-      // Add recipient address
-      let addressY = ADDRESS_WINDOW.TOP + 5;
+      // Add recipient address with proper wrapping
+      let addressY = ADDRESS_WINDOW.TOP + 4;
+      const lineHeight = 10 * 1.15; // 10pt * 1.15 = 11.5pt
+      const lineHeightMm = lineHeight / 2.834645669; // Convert to mm (≈ 4.06mm)
+      const maxWidthPoints = mmToPoints(ADDRESS_WINDOW.WIDTH - 4);
+      
+      // Helper to add a field with proper wrapping
+      const addAddressField = (text, isBold) => {
+        if (!text) return;
+        
+        // Check if text fits in one line
+        const textWidth = (isBold ? boldFont : font).widthOfTextAtSize(text, 10);
+        
+        if (textWidth <= maxWidthPoints) {
+          // Single line
+          addText(text, ADDRESS_WINDOW.LEFT + 2, addressY, 10, isBold);
+          addressY += lineHeightMm;
+        } else {
+          // Split into two lines
+          const words = text.split(' ');
+          let line1 = '';
+          let line2 = '';
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+            const testWidth = (isBold ? boldFont : font).widthOfTextAtSize(testLine, 10);
+            
+            if (testWidth <= maxWidthPoints || !line1) {
+              line1 = testLine;
+            } else {
+              line2 = words.slice(i).join(' ');
+              break;
+            }
+          }
+          
+          // If all fits in line 1, split in middle
+          if (!line2) {
+            const midPoint = Math.floor(words.length / 2);
+            line1 = words.slice(0, midPoint).join(' ');
+            line2 = words.slice(midPoint).join(' ');
+          }
+          
+          // Render both lines
+          addText(line1, ADDRESS_WINDOW.LEFT + 2, addressY, 10, isBold);
+          addressY += lineHeightMm;
+          addText(line2, ADDRESS_WINDOW.LEFT + 2, addressY, 10, isBold);
+          addressY += lineHeightMm;
+        }
+      };
+      
       if (letterData.recipientName) {
-        addText(letterData.recipientName, ADDRESS_WINDOW.LEFT + 2, addressY, 11, true, ADDRESS_WINDOW.WIDTH - 4);
-        addressY += 4;
+        addAddressField(letterData.recipientName, true);
       }
       if (letterData.recipientStreet) {
-        addText(letterData.recipientStreet, ADDRESS_WINDOW.LEFT + 2, addressY, 11, false, ADDRESS_WINDOW.WIDTH - 4);
-        addressY += 4;
+        addAddressField(letterData.recipientStreet, false);
       }
       if (letterData.recipientCity) {
-        addText(letterData.recipientCity, ADDRESS_WINDOW.LEFT + 2, addressY, 11, false, ADDRESS_WINDOW.WIDTH - 4);
+        addAddressField(letterData.recipientCity, false);
       }
     }
     
@@ -413,14 +790,94 @@ export async function printAsPDF(letterData) {
       addText(dateStr, DATE.LEFT, DATE.TOP, 11, false);
     }
     
-    // Subject (120mm from top, 25mm from left, 170mm width)
+    // Subject (120mm from top, 25mm from left, 170mm width) - Handle wrapping manually
     if (letterData.subject) {
-      addText(letterData.subject, SUBJECT.LEFT, SUBJECT.TOP, 11, true, SUBJECT.WIDTH);
+      const subjectLineHeight = 11 * 1.15; // 11pt * 1.15 = 12.65pt
+      const subjectLineHeightMm = subjectLineHeight / 2.834645669; // Convert to mm
+      const maxWidthPoints = mmToPoints(SUBJECT.WIDTH);
+      let subjectY = SUBJECT.TOP;
+      
+      // Check if text fits in one line
+      const textWidth = boldFont.widthOfTextAtSize(letterData.subject, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.subject, SUBJECT.LEFT, subjectY, 11, true);
+      } else {
+        // Split into two lines
+        const words = letterData.subject.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = boldFont.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, SUBJECT.LEFT, subjectY, 11, true);
+        subjectY += subjectLineHeightMm;
+        addText(line2, SUBJECT.LEFT, subjectY, 11, true);
+      }
     }
     
-    // Salutation (140mm from top, 25mm from left, 170mm width)
+    // Salutation (140mm from top, 25mm from left, 170mm width) - Handle wrapping manually
     if (letterData.salutation) {
-      addText(letterData.salutation, SALUTATION.LEFT, SALUTATION.TOP, 11, false, SALUTATION.WIDTH);
+      const salutationLineHeight = 11 * 1.15; // 11pt * 1.15 = 12.65pt
+      const salutationLineHeightMm = salutationLineHeight / 2.834645669; // Convert to mm
+      const maxWidthPoints = mmToPoints(SUBJECT.WIDTH); // Same width as subject
+      let salutationY = SALUTATION.TOP;
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(letterData.salutation, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.salutation, SALUTATION.LEFT, salutationY, 11, false);
+      } else {
+        // Split into two lines
+        const words = letterData.salutation.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, SALUTATION.LEFT, salutationY, 11, false);
+        salutationY += salutationLineHeightMm;
+        addText(line2, SALUTATION.LEFT, salutationY, 11, false);
+      }
     }
     
     // Body (160mm from top, 25mm from left, 170mm width) - Handle line breaks exactly like preview
@@ -468,26 +925,105 @@ export async function printAsPDF(letterData) {
       addText(letterData.closing, CLOSING.LEFT, closingY, 11, false, CLOSING.WIDTH);
     }
     
-    // Signature Name (positioned after closing)
+    // Signature Name (positioned after closing) - Handle wrapping manually
     if (letterData.signatureName) {
       const bodyLines = letterData.body ? letterData.body.split('\n').length : 0;
       const signatureY = BODY.TOP + (bodyLines * 4) + 16; // 16mm spacing after body
-      addText(letterData.signatureName, CLOSING.LEFT, signatureY, 11, false, CLOSING.WIDTH);
+      
+      const sigLineHeight = 11 * 1.15; // 11pt * 1.15 = 12.65pt
+      const sigLineHeightMm = sigLineHeight / 2.834645669; // Convert to mm
+      const maxWidthPoints = mmToPoints(CLOSING.WIDTH);
+      let sigY = signatureY;
+      
+      // Check if text fits in one line
+      const textWidth = font.widthOfTextAtSize(letterData.signatureName, 11);
+      
+      if (textWidth <= maxWidthPoints) {
+        // Single line
+        addText(letterData.signatureName, CLOSING.LEFT, sigY, 11, false);
+      } else {
+        // Split into two lines
+        const words = letterData.signatureName.split(' ');
+        let line1 = '';
+        let line2 = '';
+        
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line1 ? `${line1} ${words[i]}` : words[i];
+          const testWidth = font.widthOfTextAtSize(testLine, 11);
+          
+          if (testWidth <= maxWidthPoints || !line1) {
+            line1 = testLine;
+          } else {
+            line2 = words.slice(i).join(' ');
+            break;
+          }
+        }
+        
+        // If all fits in line 1, split in middle
+        if (!line2) {
+          const midPoint = Math.floor(words.length / 2);
+          line1 = words.slice(0, midPoint).join(' ');
+          line2 = words.slice(midPoint).join(' ');
+        }
+        
+        // Render both lines
+        addText(line1, CLOSING.LEFT, sigY, 11, false);
+        sigY += sigLineHeightMm;
+        addText(line2, CLOSING.LEFT, sigY, 11, false);
+      }
     }
     
-    // Footer (if enabled)
+    // Footer (if enabled) - Handle wrapping with size 8 and respect alignment
     if (letterData.enableFooter && letterData.footerText) {
       const footerY = 280; // 280mm from top
+      const lineSpacing = 3; // Same as legal info
+      const text = letterData.footerText;
       const alignment = letterData.footerAlignment || 'center';
-      let footerX = 25; // Default left alignment
       
-      if (alignment === 'center') {
-        footerX = 25 + (170 - letterData.footerText.length * 2) / 2; // Rough centering
-      } else if (alignment === 'right') {
-        footerX = 25 + 170 - letterData.footerText.length * 2; // Rough right alignment
+      // Manually wrap text
+      const words = text.split(' ');
+      let line = '';
+      let currentY = footerY;
+      
+      for (let i = 0; i < words.length; i++) {
+        const testLine = line ? `${line} ${words[i]}` : words[i];
+        const width = font.widthOfTextAtSize(testLine, 8);
+        
+        if (width <= mmToPoints(170) || !line) {
+          line = testLine;
+        } else {
+          // Calculate x position based on alignment
+          let footerX = 25; // Default left
+          if (alignment === 'center') {
+            const textWidth = font.widthOfTextAtSize(line, 8);
+            const textWidthMm = textWidth / 2.834645669;
+            footerX = 25 + (170 - textWidthMm) / 2;
+          } else if (alignment === 'right') {
+            const textWidth = font.widthOfTextAtSize(line, 8);
+            const textWidthMm = textWidth / 2.834645669;
+            footerX = 25 + 170 - textWidthMm;
+          }
+          
+          addText(line, footerX, currentY, 8, false);
+          currentY -= lineSpacing;
+          line = words[i];
+        }
       }
       
-      addText(letterData.footerText, footerX, footerY, 9, false, 170);
+      // Add the last line
+      if (line) {
+        let footerX = 25; // Default left
+        if (alignment === 'center') {
+          const textWidth = font.widthOfTextAtSize(line, 8);
+          const textWidthMm = textWidth / 2.834645669;
+          footerX = 25 + (170 - textWidthMm) / 2;
+        } else if (alignment === 'right') {
+          const textWidth = font.widthOfTextAtSize(line, 8);
+          const textWidthMm = textWidth / 2.834645669;
+          footerX = 25 + 170 - textWidthMm;
+        }
+        addText(line, footerX, currentY, 8, false);
+      }
     }
     
     // Legal Information (if enabled)

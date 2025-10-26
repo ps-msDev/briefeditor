@@ -1,16 +1,26 @@
 // Character limits for form fields
 export const CHAR_LIMITS = {
-  // Sender/Recipient Info
-  name: 100,              // Name fields
-  street: 80,             // Street addresses
-  city: 50,               // City addresses
-  phone: 20,              // Phone numbers
-  email: 100,             // Email addresses
+  // Sender Info (displayed as single line "name | street | city")
+  senderName: 25,        // Sender name (can be longer since it wraps)
+  senderStreet: 40,      // Sender street (can be longer since it wraps)
+  senderCity: 40,        // Sender city (can be longer since it wraps)
+  
+  // Recipient Info (displayed as separate lines)
+  recipientName: 50,      // Recipient name (single line)
+  recipientStreet: 50,    // Recipient street (single line)
+  recipientCity: 50,      // Recipient city (single line)
+  
+  // Shared info
+  name: 25,              // Name fields (legacy, kept for compatibility)
+  street: 45,            // Street addresses (legacy, kept for compatibility)
+  city: 40,              // City addresses (legacy, kept for compatibility)
+  phone: 30,             // Phone numbers
+  email: 40,             // Email addresses
   
   // Letter Content
   subject: 150,           // Subject line
-  salutation: 100,        // Salutation
-  body: 5000,             // Main letter body (textarea)
+  salutation: 150,        // Salutation
+  body: 1500,             // Main letter body (textarea)
   closing: 50,           // Closing line
   signature: 100,         // Signature name
   footerText: 500,       // Footer text
