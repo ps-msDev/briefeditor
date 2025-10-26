@@ -1,13 +1,10 @@
 name: release-please
-
 on:
   push:
     branches: [ main ]
-
 permissions:
   contents: write
   pull-requests: write
-
 jobs:
   release-please:
     runs-on: ubuntu-latest
@@ -15,6 +12,3 @@ jobs:
       - uses: googleapis/release-please-action@v4
         with:
           release-type: node
-          # optional falls dein Code NICHT im Repo-Root liegt:
-          # path: .
-          # (KEIN package-name mehr angeben – ist kein gültiger Input)
