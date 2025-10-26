@@ -18,8 +18,8 @@ export default function LetterWriter() {
   const canvasRef = useRef(null);
   
   // Generate default filename based on current date
-  const defaultFilename = `brief-${new Date().toISOString().split('T')[0]}.pdf`;
-  const [pdfFilename, setPdfFilename] = useState(defaultFilename);
+  const defaultFilename = `brief-${new Date().toISOString().split('T')[0]}`;
+  const [pdfFilename, setPdfFilename] = useState(defaultFilename + '.pdf');
 
   const today = new Date().toLocaleDateString(language === 'de' ? 'de-DE' : 'en-US', {
     day: '2-digit',
@@ -65,8 +65,10 @@ export default function LetterWriter() {
 
   const handleDownloadPDF = () => {
     // Use the custom filename if provided, otherwise fallback to default
-    const filename = pdfFilename.trim() || defaultFilename;
-    exportAsPDF(letterData, filename);
+    const filename = pdfFilename.trim() || defaultFilename + '.pdf';
+    // Ensure filename has .pdf extension
+    const finalFilename = filename.endsWith('.pdf') ? filename : filename + '.pdf';
+    exportAsPDF(letterData, finalFilename);
   };
 
   const handlePrint = () => {

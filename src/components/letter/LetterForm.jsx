@@ -535,13 +535,18 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
         <CardContent className="space-y-2 sm:space-y-3">
           <div>
             <Label htmlFor="pdfFilename" className="text-xs font-medium text-slate-600">{t.labelFilename}</Label>
-            <Input
-              id="pdfFilename"
-              value={pdfFilename}
-              onChange={(e) => setPdfFilename(e.target.value)}
-              placeholder={t.placeholderFilename}
-              className="mt-1 h-8 sm:h-9 text-sm border-slate-200"
-            />
+            <div className="mt-1 flex items-center">
+              <Input
+                id="pdfFilename"
+                value={pdfFilename.replace(/\.pdf$/i, '')}
+                onChange={(e) => setPdfFilename(e.target.value + '.pdf')}
+                placeholder={t.placeholderFilename.replace(/\.pdf$/i, '')}
+                className="h-8 sm:h-9 text-sm border-slate-200 rounded-r-none"
+              />
+              <div className="h-8 sm:h-9 px-3 flex items-center bg-slate-50 border border-l-0 border-slate-200 rounded-r-md text-sm text-slate-600 font-medium">
+                .pdf
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -81,7 +81,7 @@ export const translations = {
     
     // PDF Export
     labelFilename: 'PDF-Dateiname',
-    placeholderFilename: 'brief-2025-01-15.pdf',
+    placeholderFilename: 'brief-2025-01-15',
     
     // Info Box
     infoBoxTitle: 'DIN 5008 - Form B',
@@ -174,7 +174,7 @@ export const translations = {
     
     // PDF Export
     labelFilename: 'PDF Filename',
-    placeholderFilename: 'letter-2025-01-15.pdf',
+    placeholderFilename: 'letter-2025-01-15',
     
     // Info Box
     infoBoxTitle: 'DIN 5008 - Type B',
