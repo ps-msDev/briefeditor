@@ -125,7 +125,7 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       addText(letterData.closing, CLOSING.LEFT, 252, 11, false, 165);
       if (letterData.signatureName) {
         // Signature 15mm below closing
-        addText(letterData.signatureName, CLOSING.LEFT, 237, 11, false, 165);
+        addText(letterData.signatureName, CLOSING.LEFT, 267, 11, false, 165);
       }
     }
     
