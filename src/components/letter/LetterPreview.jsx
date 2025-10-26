@@ -328,9 +328,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                   <div className="din-text absolute print:hidden text-left whitespace-pre-wrap" style={{ 
                     top: '51%', // Approximately 1 blank line after salutation
                     left: '11.9%',
-                    right: '9.52%',
-                    maxHeight: '30%',
-                    overflow: 'hidden'
+                    right: '9.52%'
                   }}>
                     {letterData.body}
                     {/* Closing and Signature positioned after body (DIN 5008 spacing) */}
