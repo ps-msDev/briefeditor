@@ -2,8 +2,7 @@ name: release-please
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -13,7 +12,9 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         with:
           release-type: node
-          package-name: briefeditor
+          # optional falls dein Code NICHT im Repo-Root liegt:
+          # path: .
+          # (KEIN package-name mehr angeben – ist kein gültiger Input)
