@@ -8,6 +8,7 @@ import PrivacyDialog from '../components/letter/PrivacyDialog';
 import TermsDialog from '../components/letter/TermsDialog';
 import DIN5008InfoDialog from '../components/letter/DIN5008InfoDialog';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import VersionDisplay from '../components/VersionDisplay';
 import { translations } from '../components/translations';
 import { exportAsPDF, printAsPDF } from '../utils/pdfExport';
 
@@ -98,7 +99,10 @@ export default function LetterWriter() {
                   <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
                 <div className="min-w-0">
-                  <h1 className="text-sm sm:text-lg font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent truncate">{t.appTitle}</h1>
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-sm sm:text-lg font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent truncate">{t.appTitle}</h1>
+                    <VersionDisplay />
+                  </div>
                   <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">{t.appSubtitle}</p>
                 </div>
               </div>
