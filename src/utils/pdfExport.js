@@ -106,7 +106,7 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       addText(letterData.salutation, SALUTATION.LEFT, SALUTATION.TOP, 11, false, 165);
     }
     
-    // Body Text (156mm from top) - Handle line breaks like preview
+    // Body Text (156mm from top) - Handle line breaks exactly like preview
     // Follow official guidelines: 2 blank lines after body, then 3-4 blank lines for signature
     const normalLineHeight = 4; // 4mm normal line height
     const closingSpacing = normalLineHeight * 2.5; // 2.5x normal spacing = 10mm
@@ -122,15 +122,44 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       const lineHeightMm = lineHeight / 2.834645669; // Convert back to mm for positioning
       
       bodyLines.forEach(line => {
-        if (line.trim()) {
-          // Check if adding this line would exceed footer start
-          if (bodyY + lineHeightMm + closingSpacing + signatureSpacing <= footerBoxStart) {
-            addText(line, BODY.LEFT, bodyY, 11, false, 165);
-            bodyY += lineHeightMm;
-            lastBodyY = bodyY;
+        // Check if adding this line would exceed footer start
+        if (bodyY + lineHeightMm + closingSpacing + signatureSpacing <= footerBoxStart) {
+          if (line.trim()) {
+            // Non-empty line - render the text with word wrapping
+            // Split long lines into multiple lines if needed
+            const words = line.split(' ');
+            let currentLine = '';
+            
+            for (const word of words) {
+              const testLine = currentLine ? `${currentLine} ${word}` : word;
+              const testWidth = font.widthOfTextAtSize(testLine, 11);
+              const maxWidthPoints = mmToPoints(165);
+              
+              if (testWidth <= maxWidthPoints || !currentLine) {
+                currentLine = testLine;
+              } else {
+                // Current line is too long, render it and start new line
+                addText(currentLine, BODY.LEFT, bodyY, 11, false);
+                bodyY += lineHeightMm;
+                currentLine = word;
+                
+                // Check if we still have space
+                if (bodyY + lineHeightMm + closingSpacing + signatureSpacing > footerBoxStart) {
+                  return; // Stop rendering
+                }
+              }
+            }
+            
+            // Render the last line
+            if (currentLine) {
+              addText(currentLine, BODY.LEFT, bodyY, 11, false);
+            }
           }
-          // Stop rendering if we would exceed the limit
+          // Always advance Y position for both empty and non-empty lines to preserve paragraph spacing
+          bodyY += lineHeightMm;
+          lastBodyY = bodyY;
         }
+        // Stop rendering if we would exceed the limit
       });
     }
     
@@ -394,7 +423,7 @@ export async function printAsPDF(letterData) {
       addText(letterData.salutation, SALUTATION.LEFT, SALUTATION.TOP, 11, false, SALUTATION.WIDTH);
     }
     
-    // Body (160mm from top, 25mm from left, 170mm width)
+    // Body (160mm from top, 25mm from left, 170mm width) - Handle line breaks exactly like preview
     if (letterData.body) {
       const lines = letterData.body.split('\n');
       let currentY = BODY.TOP;
@@ -402,8 +431,32 @@ export async function printAsPDF(letterData) {
       
       for (const line of lines) {
         if (line.trim()) {
-          addText(line, BODY.LEFT, currentY, 11, false, BODY.WIDTH);
+          // Non-empty line - render the text with word wrapping
+          // Split long lines into multiple lines if needed
+          const words = line.split(' ');
+          let currentLine = '';
+          
+          for (const word of words) {
+            const testLine = currentLine ? `${currentLine} ${word}` : word;
+            const testWidth = font.widthOfTextAtSize(testLine, 11);
+            const maxWidthPoints = mmToPoints(BODY.WIDTH);
+            
+            if (testWidth <= maxWidthPoints || !currentLine) {
+              currentLine = testLine;
+            } else {
+              // Current line is too long, render it and start new line
+              addText(currentLine, BODY.LEFT, currentY, 11, false);
+              currentY += lineHeight;
+              currentLine = word;
+            }
+          }
+          
+          // Render the last line
+          if (currentLine) {
+            addText(currentLine, BODY.LEFT, currentY, 11, false);
+          }
         }
+        // Always advance Y position for both empty and non-empty lines to preserve paragraph spacing
         currentY += lineHeight;
       }
     }

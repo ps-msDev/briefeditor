@@ -325,7 +325,7 @@ export default function LetterPreview({ letterData, translations: t }) {
               {/* Body Text with Closing and Signature - Screen uses %, print uses mm */}
               {letterData.body && (
                 <>
-                  <div className="din-text absolute print:hidden text-justify whitespace-pre-wrap" style={{ 
+                  <div className="din-text absolute print:hidden text-left whitespace-pre-wrap" style={{ 
                     top: '52.53%',
                     left: '11.9%',
                     right: '9.52%',
@@ -343,7 +343,7 @@ export default function LetterPreview({ letterData, translations: t }) {
                       </>
                     )}
                   </div>
-                  <div className="din-text absolute hidden print:block text-justify whitespace-pre-wrap" style={{ 
+                  <div className="din-text absolute hidden print:block text-left whitespace-pre-wrap" style={{ 
                     top: '156mm',
                     left: '25mm',
                     right: '20mm'
