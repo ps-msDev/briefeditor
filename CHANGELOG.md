@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/ps-msDev/briefeditor/compare/v1.0.0...v1.1.0) (2025-10-26)
+
+
+### Features
+
+* Implement character limits and counters in LetterForm fields ([c8417ee](https://github.com/ps-msDev/briefeditor/commit/c8417eed292e58257b83edd684a87d8a6ab4bba7))
+
+
+### Bug Fixes
+
+* Update character limits and layout for LetterForm and LetterPreview components ([e8a0a54](https://github.com/ps-msDev/briefeditor/commit/e8a0a54d82fb0fd06f3de4b54396c360cea593d6))
+
 ## 1.0.0 (2025-10-26)
 
 
