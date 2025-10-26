@@ -129,6 +129,98 @@ export async function exportAsPDF(letterData, filename = 'brief.pdf') {
       }
     }
     
+    // Footer Box (1cm from bottom, 2.5cm height)
+    const footerBoxTop = 297 - 10 - 25; // 297mm (A4 height) - 10mm (1cm from bottom) - 25mm (2.5cm height) = 262mm from top
+    const footerBoxBottom = 297 - 10; // 287mm from top
+    
+    // Check if we have any footer content
+    const hasFooter = letterData.enableFooter && letterData.footerText;
+    const hasLegalInfo = letterData.enableLegalInfo && (
+      letterData.companyName || letterData.registeredOffice || letterData.companyPhone || 
+      letterData.companyFax || letterData.companyEmail || letterData.companyWebsite || 
+      letterData.bankDetails || letterData.vatId || letterData.managingDirectors || 
+      letterData.supervisoryBoard || letterData.registrationCourt || letterData.hrbNumber
+    );
+    
+    if (hasFooter || hasLegalInfo) {
+      const lineSpacing = 3; // 3mm between all lines
+      const bottomMargin = 3; // 3mm from bottom of footer box
+      
+      // Collect all footer lines
+      const footerLines = [];
+      
+      // Add footer text lines
+      if (hasFooter) {
+        const alignment = letterData.footerAlignment || 'center';
+        let footerX = 25; // Default left alignment
+        
+        if (alignment === 'center') {
+          footerX = 25 + (170 - letterData.footerText.length * 2) / 2; // Rough centering
+        } else if (alignment === 'right') {
+          footerX = 25 + 170 - letterData.footerText.length * 2; // Rough right alignment
+        }
+        
+        footerLines.push({ text: letterData.footerText, x: footerX, size: 9, isFooter: true });
+      }
+      
+      // Add legal information lines (wrapped)
+      if (hasLegalInfo) {
+        const legalInfo = [];
+        
+        if (letterData.companyName) legalInfo.push(letterData.companyName);
+        if (letterData.registeredOffice) legalInfo.push(`Sitz: ${letterData.registeredOffice}`);
+        if (letterData.companyPhone) legalInfo.push(`Tel: ${letterData.companyPhone}`);
+        if (letterData.companyFax) legalInfo.push(`Fax: ${letterData.companyFax}`);
+        if (letterData.companyEmail) legalInfo.push(`E-Mail: ${letterData.companyEmail}`);
+        if (letterData.companyWebsite) legalInfo.push(`Internet: ${letterData.companyWebsite}`);
+        if (letterData.bankDetails) legalInfo.push(letterData.bankDetails);
+        if (letterData.vatId) legalInfo.push(`USt-IdNr.: ${letterData.vatId}`);
+        if (letterData.managingDirectors) legalInfo.push(`Geschäftsführung: ${letterData.managingDirectors}`);
+        if (letterData.supervisoryBoard) legalInfo.push(`Aufsichtsratsvorsitz: ${letterData.supervisoryBoard}`);
+        if (letterData.registrationCourt && letterData.hrbNumber) {
+          legalInfo.push(`Eingetragen beim Amtsgericht ${letterData.registrationCourt}, ${letterData.hrbNumber}`);
+        }
+        
+        const legalText = legalInfo.filter(Boolean).join(', ');
+        if (legalText) {
+          // Manually wrap text
+          const words = legalText.split(' ');
+          let line = '';
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line ? `${line} ${words[i]}` : words[i];
+            const width = font.widthOfTextAtSize(testLine, 8);
+            
+            if (width <= mmToPoints(170) || !line) {
+              line = testLine;
+            } else {
+              footerLines.push({ text: line, x: 25, size: 8 });
+              line = words[i];
+            }
+          }
+          
+          // Add the last line
+          if (line) {
+            footerLines.push({ text: line, x: 25, size: 8 });
+          }
+        }
+      }
+      
+      // Draw all lines from bottom up with consistent spacing
+      const totalLines = footerLines.length;
+      const totalHeight = totalLines * lineSpacing + bottomMargin;
+      let currentY = footerBoxBottom - bottomMargin;
+      
+      for (let i = totalLines - 1; i >= 0; i--) {
+        addText(footerLines[i].text, footerLines[i].x, currentY, footerLines[i].size, false);
+        if (i > 0) {
+          // Add extra spacing between footer text and legal information
+          const extraSpacing = footerLines[i-1].isFooter ? 2 : 0; // 2mm extra spacing after footer text
+          currentY -= (lineSpacing + extraSpacing);
+        }
+      }
+    }
+    
     // Fold Marks (105mm and 210mm from top)
     if (letterData.showFoldMarks) {
       // First fold mark at 105mm
