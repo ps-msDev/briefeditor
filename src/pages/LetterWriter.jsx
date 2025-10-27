@@ -64,6 +64,11 @@ export default function LetterWriter() {
   });
 
   const handleDownloadPDF = () => {
+    // Track PDF export event in Simple Analytics
+    if (window.sa_event) {
+      window.sa_event('pdf_export');
+    }
+    
     // Use the custom filename if provided, otherwise fallback to default
     const filename = pdfFilename.trim() || defaultFilename + '.pdf';
     // Ensure filename has .pdf extension
