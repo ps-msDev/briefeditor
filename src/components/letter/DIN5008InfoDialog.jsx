@@ -5,6 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Info, CheckCircle2, ExternalLink } from 'lucide-react';
 
 export default function DIN5008InfoDialog({ language, translations }) {
+  const handleOpenChange = (open) => {
+    if (open && window.sa_event) {
+      window.sa_event('din5008_info_dialog');
+    }
+  };
+
   const content = {
     de: {
       title: 'Was ist DIN 5008?',
