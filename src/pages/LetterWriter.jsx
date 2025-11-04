@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, FileText } from 'lucide-react';
+import { Download } from 'lucide-react';
 import LetterForm from '../components/letter/LetterForm';
 import LetterPreview from '../components/letter/LetterPreview';
 import ImpressumDialog from '../components/letter/ImpressumDialog';
@@ -101,9 +101,20 @@ export default function LetterWriter() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
             {/* Left: Logo and Feature Badges */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 min-w-0">
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-slate-800 to-slate-950 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
-                  <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              <a 
+                href="https://www.briefeditor.eu" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                onClick={() => {
+                  // Track click event in Simple Analytics
+                  if (window.sa_event) {
+                    window.sa_event('logo_click');
+                  }
+                }}
+                className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity"
+              >
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shadow-sm flex-shrink-0 overflow-hidden">
+                  <img src="/favicon.svg" alt="Briefeditor Logo" className="w-full h-full" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
@@ -112,7 +123,7 @@ export default function LetterWriter() {
                   </div>
                   <p className="text-[10px] sm:text-xs text-slate-500 hidden sm:block">{t.appSubtitle}</p>
                 </div>
-              </div>
+              </a>
               
               {/* Feature Badges - Hidden on mobile */}
               <div className="hidden lg:flex flex-wrap items-center gap-2 sm:gap-4">
@@ -158,7 +169,7 @@ export default function LetterWriter() {
               <Button 
                 onClick={handleDownloadPDF}
                 size="sm"
-                className="bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-sm"
                 disabled={!letterData.body}
                 title="Wählen Sie 'Als PDF speichern' im Druckdialog"
               >
@@ -228,7 +239,7 @@ export default function LetterWriter() {
         <div className="lg:hidden mt-4 bg-white rounded-lg border border-slate-200 shadow-sm p-4">
           <Button 
             onClick={handleDownloadPDF}
-            className="w-full bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 text-white shadow-sm"
+            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white shadow-sm"
             disabled={!letterData.body}
             title="Wählen Sie 'Als PDF speichern' im Druckdialog"
           >
