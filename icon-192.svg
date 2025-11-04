@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0891b2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="192" height="192" rx="42" fill="url(#gradient)"/>
+  
+  <!-- Simple document icon -->
+  <g transform="translate(48, 36)">
+    <!-- Document shape -->
+    <path d="M 0 0 L 60 0 L 96 36 L 96 120 L 0 120 Z" fill="white" opacity="0.95"/>
+    
+    <!-- Folded corner -->
+    <path d="M 60 0 L 60 36 L 96 36 Z" fill="white" opacity="0.7"/>
+    
+    <!-- Document lines -->
+    <line x1="18" y1="54" x2="78" y2="54" stroke="url(#gradient)" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+    <line x1="18" y1="68" x2="78" y2="68" stroke="url(#gradient)" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+    <line x1="18" y1="82" x2="66" y2="82" stroke="url(#gradient)" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+    <line x1="18" y1="96" x2="72" y2="96" stroke="url(#gradient)" stroke-width="4" opacity="0.4" stroke-linecap="round"/>
+  </g>
+</svg>
