@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.1](https://github.com/ps-msDev/briefeditor/compare/v1.2.0...v1.2.1) (2026-07-12)
+
+
+### Bug Fixes
+
+* unify DIN 5008 layout between preview and PDF export via shared constants ([474771c](https://github.com/ps-msDev/briefeditor/commit/474771cadd0ffe189bea11d1779ef7512fd7dc23))
+* show error toast when PDF export fails instead of silent print fallback ([f3b6ecf](https://github.com/ps-msDev/briefeditor/commit/f3b6ecfc679145ad5b86cbe81ca7c9bff7c5e336))
+* remove duplicate recipientAddressSupplement key in clearAllText (build warning) ([8c38d2c](https://github.com/ps-msDev/briefeditor/commit/8c38d2c0c67481e0ea650080eca9a10c46e23f0e))
+
+
+### Miscellaneous
+
+* **deps:** remove unused dependencies (@base44/sdk, framer-motion, sharp, to-ico) and leftover scaffolding ([0b0479c](https://github.com/ps-msDev/briefeditor/commit/0b0479c4b2c12401d36f0e1330c368386d2bd910))
+* **deps:** update dependencies within semver ranges to fix all npm audit vulnerabilities ([5a16f42](https://github.com/ps-msDev/briefeditor/commit/5a16f42745d0a77dc5e0a7e771f2c3415f8b65fe))
+* remove dead code (unused shadcn/ui components, printAsPDF, A4Canvas, ZoomTestHelper) ([87c0c94](https://github.com/ps-msDev/briefeditor/commit/87c0c945fec09ef911a5f87510270c842e6ed52f))
+* fix all eslint findings (unused imports, invalid props, unwired analytics handler) ([3da7479](https://github.com/ps-msDev/briefeditor/commit/3da7479946b0c008a7a196a10f10525f3c6eb628))
+
+
+### Tests
+
+* add Vitest with unit tests for DIN 5008 constants, letter text helpers and PDF export ([fdd0169](https://github.com/ps-msDev/briefeditor/commit/fdd0169541a4c640d5f10162f08cd4bc1750ab4e))
+
 ## [1.2.0](https://github.com/ps-msDev/briefeditor/compare/v1.1.0...v1.2.0) (2025-10-26)
 
 
