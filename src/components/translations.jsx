@@ -94,6 +94,10 @@ export const translations = {
     previewEmpty: 'Ihr DIN 5008 Brief',
     previewStart: 'Beginnen Sie mit der Eingabe',
     formatInfo: 'DIN A4 · 210 × 297 mm · DIN 5008 konform',
+
+    // PDF Export errors
+    pdfErrorTitle: 'PDF-Export fehlgeschlagen',
+    pdfErrorDescription: 'Der Brief konnte nicht als PDF erstellt werden. Bitte versuchen Sie es erneut.',
   },
   en: {
     // Header
@@ -189,5 +193,9 @@ export const translations = {
     previewEmpty: 'Your DIN 5008 Letter',
     previewStart: 'Start typing',
     formatInfo: 'DIN A4 · 210 × 297 mm · DIN 5008 compliant',
+
+    // PDF Export errors
+    pdfErrorTitle: 'PDF export failed',
+    pdfErrorDescription: 'The letter could not be exported as a PDF. Please try again.',
   }
 };
