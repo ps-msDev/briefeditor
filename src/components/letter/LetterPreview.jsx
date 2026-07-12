@@ -1,4 +1,3 @@
-import React from 'react';
 import { FileText } from 'lucide-react';
 import {
   A4_WIDTH_MM,
