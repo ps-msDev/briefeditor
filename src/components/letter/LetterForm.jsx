@@ -128,7 +128,6 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       supervisoryBoard: '',
       registrationCourt: '',
       hrbNumber: '',
-      recipientAddressSupplement: '',
     }));
   };
 
