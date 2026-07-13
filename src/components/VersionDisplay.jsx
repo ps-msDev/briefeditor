@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink } from 'lucide-react';
 import packageJson from '../../package.json';

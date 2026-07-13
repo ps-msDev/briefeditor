@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, MapPin, FileText, Calendar, Building2, Scale, Play, Trash2 } from 'lucide-react';
+import { User, MapPin, FileText, Scale, Play, Trash2 } from 'lucide-react';
 import { CHAR_LIMITS } from '@/lib/characterLimits';
 
 export default function LetterForm({ letterData, setLetterData, translations: t, pdfFilename, setPdfFilename }) {
@@ -128,7 +128,6 @@ export default function LetterForm({ letterData, setLetterData, translations: t,
       supervisoryBoard: '',
       registrationCourt: '',
       hrbNumber: '',
-      recipientAddressSupplement: '',
     }));
   };
 

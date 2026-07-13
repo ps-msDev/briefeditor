@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import LetterForm from '../components/letter/LetterForm';
@@ -10,12 +10,13 @@ import DIN5008InfoDialog from '../components/letter/DIN5008InfoDialog';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import VersionDisplay from '../components/VersionDisplay';
 import { translations } from '../components/translations';
-import { exportAsPDF, printAsPDF } from '../utils/pdfExport';
+import { exportAsPDF } from '../utils/pdfExport';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function LetterWriter() {
   const [language, setLanguage] = useState('de');
   const t = translations[language];
-  const canvasRef = useRef(null);
+  const { toast } = useToast();
   
   // Generate default filename based on current date
   const defaultFilename = `brief-${new Date().toISOString().split('T')[0]}`;
@@ -63,7 +64,7 @@ export default function LetterWriter() {
     showGuides: false
   });
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = async () => {
     // Track PDF export event in Simple Analytics
     if (window.sa_event) {
       window.sa_event('pdf_export');
@@ -73,11 +74,14 @@ export default function LetterWriter() {
     const filename = pdfFilename.trim() || defaultFilename + '.pdf';
     // Ensure filename has .pdf extension
     const finalFilename = filename.endsWith('.pdf') ? filename : filename + '.pdf';
-    exportAsPDF(letterData, finalFilename);
-  };
-
-  const handlePrint = () => {
-    printAsPDF(letterData);
+    const success = await exportAsPDF(letterData, finalFilename);
+    if (!success) {
+      toast({
+        variant: 'destructive',
+        title: t.pdfErrorTitle,
+        description: t.pdfErrorDescription
+      });
+    }
   };
 
   const handleLanguageChange = (newLang) => {
@@ -230,7 +234,7 @@ export default function LetterWriter() {
           {/* Preview Panel - Sticky on desktop, normal on mobile */}
           <div className="print:block">
             <div className="lg:sticky lg:top-[120px] flex justify-center items-start print:static">
-              <LetterPreview letterData={letterData} translations={t} ref={canvasRef} />
+              <LetterPreview letterData={letterData} translations={t} />
             </div>
           </div>
         </div>

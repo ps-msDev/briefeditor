@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -73,7 +72,7 @@ export default function ImpressumDialog({ language }) {
           </p>
         </div>
 
-        <style jsx>{`
+        <style>{`
           @keyframes slide {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
