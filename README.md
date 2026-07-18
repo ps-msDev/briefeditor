@@ -16,7 +16,7 @@ BriefEditor solves a simple problem: writing professional letters shouldn't requ
 
 - DIN 5008 compliant formatting
 - Real-time preview
-- PDF export, client/brwoser side pdf generation
+- PDF export, client/browser side pdf generation
 - Mobile responsive
 - No data collection
 - German/English support
@@ -38,6 +38,16 @@ npm run dev
 ```bash
 npm run build
 ```
+
+Run the unit tests (Vitest) and linter:
+
+```bash
+npm test
+npm run lint
+```
+
+The DIN 5008-B layout values used by both the HTML preview and the PDF
+export live in `src/lib/din5008B.js` (single source of truth).
 
 ## License
 

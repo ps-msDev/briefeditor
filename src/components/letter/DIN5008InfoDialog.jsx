@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Info, CheckCircle2, ExternalLink } from 'lucide-react';
@@ -117,7 +116,7 @@ export default function DIN5008InfoDialog({ language, translations }) {
   const t = content[language] || content.de;
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm" className="text-blue-700 hover:text-blue-900 hover:bg-blue-100 text-xs px-2 py-1 h-6">
           <Info className="w-3 h-3 mr-1" />

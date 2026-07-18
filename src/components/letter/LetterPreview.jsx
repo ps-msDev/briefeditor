@@ -1,21 +1,41 @@
-import React from 'react';
 import { FileText } from 'lucide-react';
+import {
+  A4_WIDTH_MM,
+  MM_PER_PT,
+  CONTENT_MARGINS,
+  CONTENT_AREA,
+  SENDER_LINE,
+  ADDRESS_WINDOW,
+  SEPARATOR,
+  INFO_BOX,
+  DATE,
+  SUBJECT,
+  FOOTER,
+  MARKS,
+  TYPOGRAPHY,
+  SPACING,
+  mmToPercent,
+  mmToPercentHeight,
+  baselineToTopPercent,
+  blankLinesEm
+} from '../../lib/din5008B';
+import { getSenderLine, getLegalInfoText } from '../../lib/letterText';
+
+/**
+ * Font size in container-query width units (cqw), so the text scales
+ * exactly with the A4 paper container - matching the PDF proportions
+ * at any viewport size.
+ */
+const fontSizeCqw = (pt) => `${((pt * MM_PER_PT) / A4_WIDTH_MM * 100).toFixed(4)}cqw`;
 
 export default function LetterPreview({ letterData, translations: t }) {
   const hasContent = letterData.senderName || letterData.recipientName || letterData.subject || letterData.body;
-
-  // Format sender as single line with pipe separators
-  const getSenderLine = () => {
-    const parts = [];
-    if (letterData.senderName) parts.push(letterData.senderName);
-    if (letterData.senderStreet) parts.push(letterData.senderStreet);
-    if (letterData.senderCity) parts.push(letterData.senderCity);
-    return parts.join(' | ');
-  };
+  const senderLine = getSenderLine(letterData);
+  const legalInfoText = getLegalInfoText(letterData);
 
   return (
     <div className="relative w-full max-w-[210mm] mx-auto">
-      {/* Print Styles - DIN 5008 compliant */}
+      {/* Print styles + DIN 5008 typography, derived from shared constants */}
       <style>{`
         @media print {
           body * {
@@ -40,159 +60,151 @@ export default function LetterPreview({ letterData, translations: t }) {
             visibility: hidden !important;
           }
         }
-        
-        /* DIN 5008 Typography - Screen uses relative sizing */
-        .din-text {
-          font-family: Arial, Helvetica, sans-serif;
-          line-height: 1.15;
+
+        .din-text, .din-9pt, .din-8pt, .din-address-main {
+          font-family: ${TYPOGRAPHY.FONT_FAMILY};
+          line-height: ${TYPOGRAPHY.LINE_HEIGHT};
           color: #000;
         }
-        
+
+        /* Screen: font sizes scale with the paper container (cqw) */
         @media screen {
           .din-text {
-            font-size: clamp(8px, 1.5vw, 11pt);
+            font-size: ${fontSizeCqw(TYPOGRAPHY.MAIN_SIZE_PT)};
           }
           .din-9pt {
-            font-size: clamp(7px, 1.3vw, 9pt);
+            font-size: ${fontSizeCqw(TYPOGRAPHY.SMALL_SIZE_PT)};
           }
           .din-8pt {
-            font-size: clamp(6.5px, 1.2vw, 8pt);
+            font-size: ${fontSizeCqw(TYPOGRAPHY.FOOTER_SIZE_PT)};
           }
           .din-address-main {
-            font-size: clamp(7.5px, 1.4vw, 10pt);
+            font-size: ${fontSizeCqw(TYPOGRAPHY.ADDRESS_SIZE_PT)};
           }
         }
-        
+
+        /* Print: fixed physical font sizes */
         @media print {
           .din-text {
-            font-size: 11pt;
+            font-size: ${TYPOGRAPHY.MAIN_SIZE_PT}pt;
           }
           .din-9pt {
-            font-size: 9pt;
+            font-size: ${TYPOGRAPHY.SMALL_SIZE_PT}pt;
           }
           .din-8pt {
-            font-size: 8pt;
+            font-size: ${TYPOGRAPHY.FOOTER_SIZE_PT}pt;
           }
           .din-address-main {
-            font-size: 10pt;
+            font-size: ${TYPOGRAPHY.ADDRESS_SIZE_PT}pt;
           }
         }
       `}</style>
 
-      {/* A4 Paper Container - Responsive with proper aspect ratio */}
-      <div className="bg-white shadow-xl print:shadow-none print-area w-full relative overflow-hidden" style={{ 
-        aspectRatio: '210 / 297'
-      }}>
-        {/* Fold Marks - Using percentage for screen, mm for print */}
+      {/* A4 Paper Container - single layout for screen and print */}
+      <div
+        className="bg-white shadow-xl print:shadow-none print-area w-full relative overflow-hidden"
+        style={{
+          aspectRatio: '210 / 297',
+          containerType: 'inline-size'
+        }}
+      >
+        {/* Fold Marks */}
         {letterData.showFoldMarks && (
           <>
-            <div className="absolute left-0 w-[2.38%] h-[0.5px] bg-slate-400 print:hidden" style={{ top: '35.35%' }} />
-            <div className="absolute left-0 w-[2.38%] h-[0.5px] bg-slate-400 print:hidden" style={{ top: '70.71%' }} />
-            <div style={{
-              position: 'absolute',
-              top: '105mm',
-              left: '1mm',
-              width: '5mm',
-              height: 0,
-              borderTop: '0.2pt solid #C7C7C7',
-              display: 'none'
-            }} className="print:block" />
-            <div style={{
-              position: 'absolute',
-              top: '210mm',
-              left: '1mm',
-              width: '5mm',
-              height: 0,
-              borderTop: '0.2pt solid #C7C7C7',
-              display: 'none'
-            }} className="print:block" />
+            <div className="absolute" style={{
+              top: mmToPercentHeight(MARKS.FOLD_1),
+              left: mmToPercent(MARKS.LEFT_OFFSET),
+              width: mmToPercent(MARKS.MARK_WIDTH),
+              height: '1px',
+              backgroundColor: MARKS.COLOR
+            }} />
+            <div className="absolute" style={{
+              top: mmToPercentHeight(MARKS.FOLD_2),
+              left: mmToPercent(MARKS.LEFT_OFFSET),
+              width: mmToPercent(MARKS.MARK_WIDTH),
+              height: '1px',
+              backgroundColor: MARKS.COLOR
+            }} />
           </>
         )}
 
         {/* Hole Mark */}
         {letterData.showHoleMark && (
-          <>
-            <div className="absolute left-0 w-[3.81%] h-[0.5px] bg-slate-400 print:hidden" style={{ top: '50%' }} />
-            <div style={{
-              position: 'absolute',
-              top: '148.5mm',
-              left: '1mm',
-              width: '8mm',
-              height: 0,
-              borderTop: '0.2pt solid #C7C7C7',
-              display: 'none'
-            }} className="print:block" />
-          </>
+          <div className="absolute" style={{
+            top: mmToPercentHeight(MARKS.HOLE),
+            left: mmToPercent(MARKS.LEFT_OFFSET),
+            width: mmToPercent(MARKS.HOLE_WIDTH),
+            height: '1px',
+            backgroundColor: MARKS.COLOR
+          }} />
         )}
 
         {/* DIN 5008 Guides Overlay (screen only) */}
         {letterData.showGuides && (
           <div className="print:hidden absolute inset-0 pointer-events-none" style={{ zIndex: 10 }}>
-            {/* Page margins - Using percentages */}
-            
             {/* Sender block */}
             <div className="absolute border border-dashed border-purple-400 bg-purple-100 opacity-20" style={{
-              top: '15.15%',
-              left: '11.9%',
-              width: '38.1%',
-              height: '5.96%'
+              top: mmToPercentHeight(SENDER_LINE.TOP),
+              left: mmToPercent(SENDER_LINE.LEFT),
+              width: mmToPercent(SENDER_LINE.WIDTH),
+              height: mmToPercentHeight(SENDER_LINE.HEIGHT)
             }} />
             <div className="absolute text-[8px] text-purple-600 font-mono" style={{
-              top: '14.5%',
-              left: '11.9%'
+              top: mmToPercentHeight(SENDER_LINE.TOP - 2),
+              left: mmToPercent(SENDER_LINE.LEFT)
             }}>Absender</div>
-            
+
             {/* Recipient address window */}
             <div className="absolute border-2 border-dashed border-green-500 bg-green-100 opacity-20" style={{
-              top: '21.11%',
-              left: '11.9%',
-              width: '38.1%',
-              height: '9.19%'
+              top: mmToPercentHeight(ADDRESS_WINDOW.TOP),
+              left: mmToPercent(ADDRESS_WINDOW.LEFT),
+              width: mmToPercent(ADDRESS_WINDOW.WIDTH),
+              height: mmToPercentHeight(ADDRESS_WINDOW.HEIGHT)
             }} />
             <div className="absolute text-[8px] text-green-600 font-mono" style={{
-              top: '20.5%',
-              left: '11.9%'
+              top: mmToPercentHeight(ADDRESS_WINDOW.TOP - 2),
+              left: mmToPercent(ADDRESS_WINDOW.LEFT)
             }}>Anschrift</div>
-            
-            {/* Main text field (Textfeld) - starts 8.46mm below recipient address window, ends 4cm from bottom */}
+
+            {/* Main text field */}
             <div className="absolute border-2 border-dashed border-blue-500 bg-blue-100 opacity-20" style={{
-              top: '33.15%',
-              left: '11.9%',
-              right: '9.52%',
-              bottom: '13.47%'
+              top: mmToPercentHeight(98.46),
+              left: mmToPercent(CONTENT_MARGINS.LEFT),
+              right: mmToPercent(CONTENT_MARGINS.RIGHT),
+              bottom: mmToPercentHeight(40)
             }} />
             <div className="absolute text-[8px] text-blue-600 font-mono" style={{
-              top: '32.5%',
-              left: '11.9%'
+              top: mmToPercentHeight(96.46),
+              left: mmToPercent(CONTENT_MARGINS.LEFT)
             }}>Textfeld</div>
-            
+
             {/* Info box area */}
             <div className="absolute border-2 border-dashed border-orange-500 bg-orange-100 opacity-20" style={{
-              top: '16.84%',
-              left: '59.52%',
-              width: '35.71%',
-              height: '13.47%'
+              top: mmToPercentHeight(INFO_BOX.TOP),
+              left: mmToPercent(INFO_BOX.LEFT),
+              width: mmToPercent(INFO_BOX.WIDTH),
+              height: mmToPercentHeight(INFO_BOX.HEIGHT)
             }} />
             <div className="absolute text-[8px] text-orange-600 font-mono" style={{
-              top: '16.2%',
-              left: '59.52%'
+              top: mmToPercentHeight(INFO_BOX.TOP - 2),
+              left: mmToPercent(INFO_BOX.LEFT)
             }}>Info-Block</div>
-            
+
             {/* Footer area */}
             <div className="absolute border-2 border-dashed border-red-500 bg-red-100 opacity-20" style={{
-              bottom: '3.37%',
-              left: '11.9%',
-              right: '9.52%',
-              height: '8.42%'
+              bottom: mmToPercentHeight(FOOTER.BOTTOM),
+              left: mmToPercent(FOOTER.LEFT),
+              right: mmToPercent(FOOTER.RIGHT),
+              height: mmToPercentHeight(FOOTER.HEIGHT)
             }} />
             <div className="absolute text-[8px] text-red-600 font-mono" style={{
-              bottom: '11.8%',
-              left: '11.9%'
+              bottom: mmToPercentHeight(FOOTER.BOTTOM + FOOTER.HEIGHT - 1),
+              left: mmToPercent(FOOTER.LEFT)
             }}>Fußzeile</div>
           </div>
         )}
 
-        {/* Letter Content - Using percentages for screen, mm for print */}
+        {/* Letter Content */}
         <div className="din-text absolute inset-0">
           {!hasContent ? (
             <div className="flex items-center justify-center h-full text-slate-300">
@@ -204,268 +216,126 @@ export default function LetterPreview({ letterData, translations: t }) {
             </div>
           ) : (
             <>
-              {/* Sender Block - Screen uses %, print uses mm */}
-              {getSenderLine() && (
-                <>
-                  <div className="din-8pt absolute print:hidden flex items-end" style={{ 
-                    top: '15.15%',
-                    left: '11.9%',
-                    width: '40.48%',
-                    height: '5.96%',
-                    paddingBottom: '0.5%'
-                  }}>
-                    {getSenderLine()}
-                  </div>
-                  <div className="din-8pt absolute hidden print:flex items-end" style={{ 
-                    top: '45mm',
-                    left: '25mm',
-                    width: '85mm',
-                    height: '17.7mm',
-                    paddingBottom: '0.5mm'
-                  }}>
-                    {getSenderLine()}
-                  </div>
-                </>
+              {/* Sender line - bottom-aligned above the separator */}
+              {senderLine && (
+                <div className="din-8pt absolute flex items-end" style={{
+                  top: mmToPercentHeight(SENDER_LINE.TOP),
+                  left: mmToPercent(SENDER_LINE.LEFT),
+                  width: mmToPercent(SENDER_LINE.WIDTH),
+                  height: mmToPercentHeight(SENDER_LINE.HEIGHT - 1)
+                }}>
+                  {senderLine}
+                </div>
               )}
 
-              {/* Information Box - Screen uses %, print uses mm */}
-              <div className="din-9pt absolute print:hidden flex flex-col justify-between" style={{ 
-                top: '21.11%',
-                left: '59.52%',
-                right: '9.52%',
-                height: '13.47%'
-              }}>
-                <div style={{ paddingTop: '4.28%' }}>
+              {/* Separator line between sender and recipient */}
+              <div className="absolute" style={{
+                top: mmToPercentHeight(SEPARATOR.TOP),
+                left: mmToPercent(SEPARATOR.LEFT),
+                width: mmToPercent(SEPARATOR.WIDTH),
+                height: '1px',
+                backgroundColor: SEPARATOR.COLOR
+              }} />
+
+              {/* Info box (phone / e-mail) */}
+              {(letterData.senderPhone || letterData.senderEmail) && (
+                <div className="din-9pt absolute" style={{
+                  top: baselineToTopPercent(INFO_BOX.FIRST_BASELINE, INFO_BOX.FONT_SIZE_PT),
+                  left: mmToPercent(INFO_BOX.LEFT),
+                  right: mmToPercent(INFO_BOX.RIGHT)
+                }}>
                   {letterData.senderPhone && <div>Telefon: {letterData.senderPhone}</div>}
                   {letterData.senderEmail && <div>E-Mail: {letterData.senderEmail}</div>}
                 </div>
-                {letterData.date && (
-                  <div className="din-text text-right" style={{ paddingRight: '4.76%' }}>
-                    {letterData.date}
-                  </div>
-                )}
-              </div>
-              <div className="din-9pt absolute hidden print:flex flex-col justify-between" style={{ 
-                top: '62.7mm',
-                left: '125mm',
-                right: '10mm',
-                height: '40mm'
-              }}>
-                <div>
-                  {letterData.senderPhone && <div>Telefon: {letterData.senderPhone}</div>}
-                  {letterData.senderEmail && <div>E-Mail: {letterData.senderEmail}</div>}
+              )}
+
+              {/* Date - right aligned at the content right edge */}
+              {letterData.date && (
+                <div className="din-text absolute text-right" style={{
+                  top: baselineToTopPercent(DATE.TOP, TYPOGRAPHY.MAIN_SIZE_PT),
+                  left: mmToPercent(DATE.LEFT),
+                  right: mmToPercent(DATE.RIGHT)
+                }}>
+                  {letterData.date}
                 </div>
-                {letterData.date && (
-                  <div className="din-text text-right" style={{ paddingRight: '10mm' }}>
-                    {letterData.date}
-                  </div>
-                )}
-              </div>
-              
-              {/* Separator Line - Between Absender and Empfänger */}
-              <div className="absolute print:hidden" style={{ 
-                top: '21.11%',
-                left: '9.52%',
-                width: '42.86%',
-                height: '0.5px',
-                backgroundColor: '#d1d5db'
-              }} />
-              <div className="absolute hidden print:block" style={{ 
-                top: '62.7mm',
-                left: '20mm',
-                width: '90mm',
-                height: '0.25pt',
-                backgroundColor: '#d1d5db'
-              }} />
-              
-              {/* Recipient Address - Screen uses %, print uses mm */}
+              )}
+
+              {/* Recipient address */}
               {letterData.recipientName && (
-                <>
-                  <div className="din-address-main absolute print:hidden" style={{ 
-                    top: '22.11%',
-                    left: '11.9%',
-                    width: '40.48%',
-                    maxHeight: '9.19%'
-                  }}>
-                    <div className="font-semibold">{letterData.recipientName}</div>
-                    {letterData.recipientAddressSupplement && <div>{letterData.recipientAddressSupplement}</div>}
-                    {letterData.recipientStreet && <div>{letterData.recipientStreet}</div>}
-                    {letterData.recipientCity && <div>{letterData.recipientCity}</div>}
-                  </div>
-                  <div className="din-address-main absolute hidden print:block" style={{ 
-                    top: '62.7mm',
-                    left: '25mm',
-                    width: '85mm',
-                    maxHeight: '27.3mm'
-                  }}>
-                    <div className="font-semibold">{letterData.recipientName}</div>
-                    {letterData.recipientAddressSupplement && <div>{letterData.recipientAddressSupplement}</div>}
-                    {letterData.recipientStreet && <div>{letterData.recipientStreet}</div>}
-                    {letterData.recipientCity && <div>{letterData.recipientCity}</div>}
-                  </div>
-                </>
+                <div className="din-address-main absolute" style={{
+                  top: baselineToTopPercent(ADDRESS_WINDOW.FIRST_BASELINE, ADDRESS_WINDOW.FONT_SIZE_PT),
+                  left: mmToPercent(ADDRESS_WINDOW.LEFT),
+                  width: mmToPercent(ADDRESS_WINDOW.WIDTH)
+                }}>
+                  <div className="font-semibold">{letterData.recipientName}</div>
+                  {letterData.recipientAddressSupplement && <div>{letterData.recipientAddressSupplement}</div>}
+                  {letterData.recipientStreet && <div>{letterData.recipientStreet}</div>}
+                  {letterData.recipientCity && <div>{letterData.recipientCity}</div>}
+                </div>
               )}
 
-              {/* Subject Line - Screen uses %, print uses mm */}
-              {letterData.subject && (
-                <>
-                  <div className="din-text absolute print:hidden font-bold" style={{ 
-                    top: '42.09%',
-                    left: '11.9%',
-                    right: '9.52%'
-                  }}>
-                    {letterData.subject}
-                  </div>
-                  <div className="din-text absolute hidden print:block font-bold" style={{ 
-                    top: '125mm',
-                    left: '25mm',
-                    right: '20mm'
-                  }}>
-                    {letterData.subject}
-                  </div>
-                </>
-              )}
-
-              {/* Salutation - 2 blank lines after subject (DIN 5008) */}
-              {letterData.salutation && (
-                <>
-                  <div className="din-text absolute print:hidden" style={{ 
-                    top: '47%', // Approximately 2 blank lines after subject
-                    left: '11.9%',
-                    right: '9.52%'
-                  }}>
+              {/* Text block: subject, salutation, body, closing, signature.
+                  Elements flow in document order with em-based gaps that mirror
+                  the PDF's line-height based spacing, so wrapped lines shift
+                  subsequent content just like in the PDF. */}
+              <div className="din-text absolute" style={{
+                top: baselineToTopPercent(SUBJECT.TOP, TYPOGRAPHY.MAIN_SIZE_PT),
+                left: mmToPercent(SUBJECT.LEFT),
+                right: mmToPercent(SUBJECT.RIGHT)
+              }}>
+                {letterData.subject && (
+                  <div className="font-bold">{letterData.subject}</div>
+                )}
+                {letterData.salutation && (
+                  <div style={{ marginTop: letterData.subject ? blankLinesEm(SPACING.SUBJECT_TO_SALUTATION) : 0 }}>
                     {letterData.salutation}
                   </div>
-                  <div className="din-text absolute hidden print:block" style={{ 
-                    top: '134mm', // 125mm + 2×4.46mm = 134mm (2 blank lines after subject)
-                    left: '25mm',
-                    right: '20mm'
-                  }}>
-                    {letterData.salutation}
-                  </div>
-                </>
-              )}
-
-              {/* Body Text with Closing and Signature - 1 blank line after salutation (DIN 5008) */}
-              {letterData.body && (
-                <>
-                  <div className="din-text absolute print:hidden text-left whitespace-pre-wrap" style={{ 
-                    top: '51%', // Approximately 1 blank line after salutation
-                    left: '11.9%',
-                    right: '9.52%'
-                  }}>
+                )}
+                {letterData.body && (
+                  <div className="whitespace-pre-wrap" style={{ marginTop: blankLinesEm(SPACING.SALUTATION_TO_BODY) }}>
                     {letterData.body}
-                    {/* Closing and Signature positioned after body (DIN 5008 spacing) */}
-                    {letterData.closing && (
-                      <>
-                        <div style={{ height: '4.46mm', marginTop: '4.46mm' }}></div>
-                        <div>{letterData.closing}</div>
-                        <div style={{ height: '8.92mm', marginTop: '8.92mm' }}></div>
-                        {letterData.signatureName && <div>{letterData.signatureName}</div>}
-                      </>
-                    )}
                   </div>
-                  <div className="din-text absolute hidden print:block text-left whitespace-pre-wrap" style={{ 
-                    top: '138mm', // 134mm + 4.46mm = 138mm (1 blank line after salutation)
-                    left: '25mm',
-                    right: '20mm'
-                  }}>
-                    {letterData.body}
-                    {/* Closing and Signature positioned after body (DIN 5008: 1 blank line after body, 2 blank lines before signature) */}
-                    {letterData.closing && (
-                      <>
-                        <div style={{ height: '4.46mm', marginTop: '4.46mm' }}></div>
-                        <div>{letterData.closing}</div>
-                        <div style={{ height: '8.92mm', marginTop: '8.92mm' }}></div>
-                        {letterData.signatureName && <div>{letterData.signatureName}</div>}
-                      </>
-                    )}
+                )}
+                {letterData.closing && (
+                  <div style={{ marginTop: blankLinesEm(SPACING.BODY_TO_CLOSING) }}>
+                    {letterData.closing}
                   </div>
-                </>
-              )}
+                )}
+                {letterData.closing && letterData.signatureName && (
+                  <div style={{ marginTop: blankLinesEm(SPACING.CLOSING_TO_SIGNATURE) }}>
+                    {letterData.signatureName}
+                  </div>
+                )}
+              </div>
 
-
-              {/* Footer Area - Screen uses %, print uses mm */}
+              {/* Footer area - bottom-aligned inside the footer box */}
               {(letterData.enableFooter || letterData.enableLegalInfo) && (
-                <>
-                  <div className="absolute print:hidden flex flex-col justify-end" style={{
-                    bottom: '3.37%',
-                    left: '11.9%',
-                    right: '9.52%',
-                    maxHeight: '8.42%'
-                  }}>
-                    {letterData.enableFooter && letterData.footerText && (
-                      <div 
-                        className="din-9pt whitespace-pre-wrap mb-2"
-                        style={{ 
-                          textAlign: letterData.footerAlignment,
-                          fontSize: 'clamp(6px, 1.1vw, 8pt)'
-                        }}
-                      >
-                        {letterData.footerText}
-                      </div>
-                    )}
-                    {letterData.enableLegalInfo && (
-                      <div className="din-9pt" style={{ fontSize: 'clamp(6px, 1.1vw, 8pt)', lineHeight: '1.2' }}>
-                        <div>
-                          {[
-                            letterData.companyName,
-                            letterData.registeredOffice && `Sitz: ${letterData.registeredOffice}`,
-                            letterData.companyPhone && `Tel: ${letterData.companyPhone}`,
-                            letterData.companyFax && `Fax: ${letterData.companyFax}`,
-                            letterData.companyEmail && `E-Mail: ${letterData.companyEmail}`,
-                            letterData.companyWebsite && `Internet: ${letterData.companyWebsite}`,
-                            letterData.bankDetails,
-                            letterData.vatId && `USt-IdNr.: ${letterData.vatId}`,
-                            letterData.managingDirectors && `Geschäftsführung: ${letterData.managingDirectors}`,
-                            letterData.supervisoryBoard && `Aufsichtsratsvorsitz: ${letterData.supervisoryBoard}`,
-                            letterData.registrationCourt && letterData.hrbNumber && 
-                              `Eingetragen beim Amtsgericht ${letterData.registrationCourt}, ${letterData.hrbNumber}`
-                          ].filter(Boolean).join(', ')}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="absolute hidden print:flex flex-col justify-end" style={{
-                    bottom: '10mm',
-                    left: '25mm',
-                    right: '20mm',
-                    maxHeight: '25mm'
-                  }}>
-                    {letterData.enableFooter && letterData.footerText && (
-                      <div 
-                        className="din-9pt whitespace-pre-wrap"
-                        style={{ 
-                          textAlign: letterData.footerAlignment,
-                          fontSize: '8pt',
-                          marginBottom: '8px'
-                        }}
-                      >
-                        {letterData.footerText}
-                      </div>
-                    )}
-                    {letterData.enableLegalInfo && (
-                      <div className="din-9pt" style={{ fontSize: '8pt', lineHeight: '1.2' }}>
-                        <div>
-                          {[
-                            letterData.companyName,
-                            letterData.registeredOffice && `Sitz: ${letterData.registeredOffice}`,
-                            letterData.companyPhone && `Tel: ${letterData.companyPhone}`,
-                            letterData.companyFax && `Fax: ${letterData.companyFax}`,
-                            letterData.companyEmail && `E-Mail: ${letterData.companyEmail}`,
-                            letterData.companyWebsite && `Internet: ${letterData.companyWebsite}`,
-                            letterData.bankDetails,
-                            letterData.vatId && `USt-IdNr.: ${letterData.vatId}`,
-                            letterData.managingDirectors && `Geschäftsführung: ${letterData.managingDirectors}`,
-                            letterData.supervisoryBoard && `Aufsichtsratsvorsitz: ${letterData.supervisoryBoard}`,
-                            letterData.registrationCourt && letterData.hrbNumber && 
-                              `Eingetragen beim Amtsgericht ${letterData.registrationCourt}, ${letterData.hrbNumber}`
-                          ].filter(Boolean).join(', ')}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </>
+                <div className="absolute flex flex-col justify-end" style={{
+                  bottom: mmToPercentHeight(FOOTER.BOTTOM),
+                  left: mmToPercent(FOOTER.LEFT),
+                  right: mmToPercent(FOOTER.RIGHT),
+                  maxHeight: mmToPercentHeight(FOOTER.HEIGHT)
+                }}>
+                  {letterData.enableFooter && letterData.footerText && (
+                    <div
+                      className="din-8pt whitespace-pre-wrap"
+                      style={{
+                        textAlign: letterData.footerAlignment,
+                        // Percentage margins resolve against the parent width (= content area width)
+                        marginBottom: legalInfoText && letterData.enableLegalInfo
+                          ? `${(FOOTER.SECTION_GAP / CONTENT_AREA.WIDTH) * 100}%`
+                          : 0
+                      }}
+                    >
+                      {letterData.footerText}
+                    </div>
+                  )}
+                  {letterData.enableLegalInfo && legalInfoText && (
+                    <div className="din-8pt">
+                      {legalInfoText}
+                    </div>
+                  )}
+                </div>
               )}
             </>
           )}
