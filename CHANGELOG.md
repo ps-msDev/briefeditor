@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1](https://github.com/ps-msDev/briefeditor/compare/v1.2.0...v1.2.1) (2026-07-18)
+
+
+### Bug Fixes
+
+* remove duplicate recipientAddressSupplement key in clearAllText (build warning) ([8c38d2c](https://github.com/ps-msDev/briefeditor/commit/8c38d2c0c67481e0ea650080eca9a10c46e23f0e))
+* show error toast when PDF export fails instead of silent print fallback ([f3b6ecf](https://github.com/ps-msDev/briefeditor/commit/f3b6ecfc679145ad5b86cbe81ca7c9bff7c5e336))
+* unify DIN 5008 layout between preview and PDF export via shared constants ([474771c](https://github.com/ps-msDev/briefeditor/commit/474771cadd0ffe189bea11d1779ef7512fd7dc23))
+
 ## [1.2.0](https://github.com/ps-msDev/briefeditor/compare/v1.1.0...v1.2.0) (2025-10-26)
 
 
