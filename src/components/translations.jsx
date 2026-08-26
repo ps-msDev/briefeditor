@@ -98,6 +98,19 @@ export const translations = {
     // PDF Export errors
     pdfErrorTitle: 'PDF-Export fehlgeschlagen',
     pdfErrorDescription: 'Der Brief konnte nicht als PDF erstellt werden. Bitte versuchen Sie es erneut.',
+
+    // Feedback
+    feedbackButton: 'Feedback',
+    feedbackTitle: 'Feedback',
+    feedbackSubtitle: 'Was wünschst du dir noch? Kurz und ehrlich reicht.',
+    feedbackRatingLabel: 'Bewertung',
+    feedbackMessageLabel: 'Dein Wunsch (optional)',
+    feedbackMessagePlaceholder: 'z. B. eine Funktion, die dir fehlt…',
+    feedbackMailtoHint: 'Öffnet dein E-Mail-Programm – nichts wird hier gespeichert.',
+    feedbackSubmit: 'Senden',
+    feedbackEmailSubject: 'Briefeditor Feedback',
+    feedbackThanksTitle: 'Danke!',
+    feedbackThanksDescription: 'Dein E-Mail-Programm sollte sich geöffnet haben.',
   },
   en: {
     // Header
@@ -197,5 +210,18 @@ export const translations = {
     // PDF Export errors
     pdfErrorTitle: 'PDF export failed',
     pdfErrorDescription: 'The letter could not be exported as a PDF. Please try again.',
+
+    // Feedback
+    feedbackButton: 'Feedback',
+    feedbackTitle: 'Feedback',
+    feedbackSubtitle: 'What else would you like? Short and honest is enough.',
+    feedbackRatingLabel: 'Rating',
+    feedbackMessageLabel: 'Your wish (optional)',
+    feedbackMessagePlaceholder: 'e.g. a feature you are missing…',
+    feedbackMailtoHint: 'Opens your email client – nothing is stored here.',
+    feedbackSubmit: 'Send',
+    feedbackEmailSubject: 'Letter Editor Feedback',
+    feedbackThanksTitle: 'Thanks!',
+    feedbackThanksDescription: 'Your email client should have opened.',
   }
 };

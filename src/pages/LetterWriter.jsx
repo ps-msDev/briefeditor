@@ -8,6 +8,7 @@ import PrivacyDialog from '../components/letter/PrivacyDialog';
 import TermsDialog from '../components/letter/TermsDialog';
 import DIN5008InfoDialog from '../components/letter/DIN5008InfoDialog';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import FeedbackDialog from '../components/FeedbackDialog';
 import VersionDisplay from '../components/VersionDisplay';
 import { translations } from '../components/translations';
 import { exportAsPDF } from '../utils/pdfExport';
@@ -277,14 +278,16 @@ export default function LetterWriter() {
           </div>
         </div>
 
-        {/* Language Switcher - At bottom on mobile, static */}
-        <div className="lg:hidden mt-4 flex justify-end">
+        {/* Floating controls - mobile */}
+        <div className="lg:hidden mt-4 flex justify-end gap-2 print:hidden">
+          <FeedbackDialog translations={t} />
           <LanguageSwitcher currentLanguage={language} onLanguageChange={handleLanguageChange} />
         </div>
       </div>
 
-      {/* Language Switcher - Desktop only (fixed position) */}
-      <div className="hidden lg:block">
+      {/* Floating controls - desktop */}
+      <div className="hidden lg:flex lg:fixed lg:bottom-6 lg:right-6 lg:z-50 lg:gap-2 print:hidden">
+        <FeedbackDialog translations={t} />
         <LanguageSwitcher currentLanguage={language} onLanguageChange={handleLanguageChange} />
       </div>
     </div>
