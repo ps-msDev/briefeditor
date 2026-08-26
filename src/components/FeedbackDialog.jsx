@@ -8,11 +8,13 @@ import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 
 const FEEDBACK_EMAIL = 'pphschmidt-dev@yahoo.com';
+const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`;
 
 export default function FeedbackDialog({ translations: t }) {
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
   const { toast } = useToast();
 
   const reset = () => {
@@ -21,33 +23,55 @@ export default function FeedbackDialog({ translations: t }) {
   };
 
   const handleOpenChange = (nextOpen) => {
+    if (sending) return;
     setOpen(nextOpen);
     if (!nextOpen) reset();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!rating) return;
+    if (!rating || sending) return;
 
-    const body = [
-      `${t.feedbackRatingLabel}: ${rating}/5`,
-      '',
-      message.trim() || '—'
-    ].join('\n');
+    setSending(true);
+    try {
+      const response = await fetch(FORMSUBMIT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          _subject: t.feedbackEmailSubject,
+          rating: `${rating}/5`,
+          message: message.trim() || '—',
+          source: 'briefeditor'
+        })
+      });
 
-    const mailto = `mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent(t.feedbackEmailSubject)}&body=${encodeURIComponent(body)}`;
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === 'false' || data.success === false) {
+        throw new Error(data.message || 'submit_failed');
+      }
 
-    if (window.sa_event) {
-      window.sa_event('feedback_submit');
+      if (window.sa_event) {
+        window.sa_event('feedback_submit');
+      }
+
+      setOpen(false);
+      reset();
+      toast({
+        title: t.feedbackThanksTitle,
+        description: t.feedbackThanksDescription
+      });
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: t.feedbackErrorTitle,
+        description: t.feedbackErrorDescription
+      });
+    } finally {
+      setSending(false);
     }
-
-    window.location.href = mailto;
-    setOpen(false);
-    reset();
-    toast({
-      title: t.feedbackThanksTitle,
-      description: t.feedbackThanksDescription
-    });
   };
 
   return (
@@ -77,6 +101,7 @@ export default function FeedbackDialog({ translations: t }) {
                   type="button"
                   onClick={() => setRating(value)}
                   aria-pressed={rating === value}
+                  disabled={sending}
                   className={cn(
                     'h-10 w-10 rounded-full border text-sm font-medium transition-all',
                     rating === value
@@ -100,16 +125,16 @@ export default function FeedbackDialog({ translations: t }) {
               placeholder={t.feedbackMessagePlaceholder}
               rows={3}
               maxLength={500}
+              disabled={sending}
               className="resize-none text-sm"
             />
           </div>
-          <p className="text-xs text-slate-400">{t.feedbackMailtoHint}</p>
           <Button
             type="submit"
-            disabled={!rating}
+            disabled={!rating || sending}
             className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
           >
-            {t.feedbackSubmit}
+            {sending ? t.feedbackSending : t.feedbackSubmit}
           </Button>
         </form>
       </DialogContent>

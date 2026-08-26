@@ -106,11 +106,13 @@ export const translations = {
     feedbackRatingLabel: 'Bewertung',
     feedbackMessageLabel: 'Dein Wunsch (optional)',
     feedbackMessagePlaceholder: 'z. B. eine Funktion, die dir fehlt…',
-    feedbackMailtoHint: 'Öffnet dein E-Mail-Programm – nichts wird hier gespeichert.',
     feedbackSubmit: 'Senden',
+    feedbackSending: 'Wird gesendet…',
     feedbackEmailSubject: 'Briefeditor Feedback',
     feedbackThanksTitle: 'Danke!',
-    feedbackThanksDescription: 'Dein E-Mail-Programm sollte sich geöffnet haben.',
+    feedbackThanksDescription: 'Dein Feedback ist angekommen.',
+    feedbackErrorTitle: 'Senden fehlgeschlagen',
+    feedbackErrorDescription: 'Bitte versuche es später noch einmal.',
   },
   en: {
     // Header
@@ -218,10 +220,12 @@ export const translations = {
     feedbackRatingLabel: 'Rating',
     feedbackMessageLabel: 'Your wish (optional)',
     feedbackMessagePlaceholder: 'e.g. a feature you are missing…',
-    feedbackMailtoHint: 'Opens your email client – nothing is stored here.',
     feedbackSubmit: 'Send',
+    feedbackSending: 'Sending…',
     feedbackEmailSubject: 'Letter Editor Feedback',
     feedbackThanksTitle: 'Thanks!',
-    feedbackThanksDescription: 'Your email client should have opened.',
+    feedbackThanksDescription: 'Your feedback has been received.',
+    feedbackErrorTitle: 'Could not send',
+    feedbackErrorDescription: 'Please try again later.',
   }
 };
