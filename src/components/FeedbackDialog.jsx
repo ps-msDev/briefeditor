@@ -10,16 +10,70 @@ import { cn } from '@/lib/utils';
 const FEEDBACK_EMAIL = 'pphschmidt-dev@yahoo.com';
 const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${FEEDBACK_EMAIL}`;
 
+const MOODS = [
+  { value: 1, emoji: '😠', key: 'feedbackMood1' },
+  { value: 2, emoji: '😕', key: 'feedbackMood2' },
+  { value: 3, emoji: '😐', key: 'feedbackMood3' },
+  { value: 4, emoji: '🙂', key: 'feedbackMood4' },
+  { value: 5, emoji: '🤩', key: 'feedbackMood5' }
+];
+
+function MoodPicker({ label, value, onChange, disabled, translations: t, name }) {
+  const selected = MOODS.find((mood) => mood.value === value);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <Label className="text-slate-700">{label}</Label>
+        <span className="text-xs text-slate-400 min-h-[1rem] transition-opacity">
+          {selected ? t[selected.key] : t.feedbackMoodHint}
+        </span>
+      </div>
+      <div className="flex justify-between gap-1" role="group" aria-label={label}>
+        {MOODS.map((mood) => {
+          const isSelected = value === mood.value;
+          return (
+            <button
+              key={mood.value}
+              type="button"
+              onClick={() => onChange(mood.value)}
+              aria-pressed={isSelected}
+              aria-label={`${mood.value}/5 – ${t[mood.key]}`}
+              disabled={disabled}
+              className={cn(
+                'flex h-11 w-11 items-center justify-center rounded-2xl text-2xl transition-all duration-200',
+                'hover:scale-125 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+                isSelected
+                  ? 'scale-125 -translate-y-1 bg-blue-50 shadow-sm ring-2 ring-blue-500/30'
+                  : 'opacity-55 hover:opacity-100 grayscale-[30%] hover:grayscale-0'
+              )}
+            >
+              <span className={cn(isSelected && 'animate-[bounce_0.45s_ease]')}>{mood.emoji}</span>
+            </button>
+          );
+        })}
+      </div>
+      <input type="hidden" name={name} value={value || ''} readOnly />
+    </div>
+  );
+}
+
 export default function FeedbackDialog({ translations: t }) {
   const [open, setOpen] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [overall, setOverall] = useState(0);
+  const [design, setDesign] = useState(0);
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
+  const [justSent, setJustSent] = useState(false);
   const { toast } = useToast();
 
+  const canSubmit = overall > 0 && design > 0;
+
   const reset = () => {
-    setRating(0);
+    setOverall(0);
+    setDesign(0);
     setMessage('');
+    setJustSent(false);
   };
 
   const handleOpenChange = (nextOpen) => {
@@ -30,7 +84,7 @@ export default function FeedbackDialog({ translations: t }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!rating || sending) return;
+    if (!canSubmit || sending) return;
 
     setSending(true);
     try {
@@ -42,7 +96,8 @@ export default function FeedbackDialog({ translations: t }) {
         },
         body: JSON.stringify({
           _subject: t.feedbackEmailSubject,
-          rating: `${rating}/5`,
+          overall: `${overall}/5`,
+          design: `${design}/5`,
           message: message.trim() || '—',
           source: 'briefeditor'
         })
@@ -57,12 +112,16 @@ export default function FeedbackDialog({ translations: t }) {
         window.sa_event('feedback_submit');
       }
 
-      setOpen(false);
-      reset();
+      setJustSent(true);
       toast({
         title: t.feedbackThanksTitle,
-        description: t.feedbackThanksDescription
+        description: overall >= 4 ? t.feedbackThanksHappy : t.feedbackThanksDescription
       });
+
+      window.setTimeout(() => {
+        setOpen(false);
+        reset();
+      }, 900);
     } catch {
       toast({
         variant: 'destructive',
@@ -86,57 +145,73 @@ export default function FeedbackDialog({ translations: t }) {
           <span className="text-sm font-medium text-slate-700">{t.feedbackButton}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-slate-900">{t.feedbackTitle}</DialogTitle>
-        </DialogHeader>
-        <p className="text-sm text-slate-600 -mt-1">{t.feedbackSubtitle}</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label className="text-slate-700">{t.feedbackRatingLabel}</Label>
-            <div className="flex gap-2" role="group" aria-label={t.feedbackRatingLabel}>
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setRating(value)}
-                  aria-pressed={rating === value}
+      <DialogContent className="max-w-sm overflow-hidden">
+        {justSent ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-8 text-center animate-in fade-in zoom-in-95 duration-300">
+            <span className="text-4xl" aria-hidden>💌</span>
+            <p className="text-lg font-semibold text-slate-900">{t.feedbackThanksTitle}</p>
+            <p className="text-sm text-slate-500">{t.feedbackThanksDescription}</p>
+          </div>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-slate-900">{t.feedbackTitle}</DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-slate-600 -mt-1">{t.feedbackSubtitle}</p>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <MoodPicker
+                label={t.feedbackOverallLabel}
+                value={overall}
+                onChange={setOverall}
+                disabled={sending}
+                translations={t}
+                name="overall"
+              />
+              <MoodPicker
+                label={t.feedbackDesignLabel}
+                value={design}
+                onChange={setDesign}
+                disabled={sending}
+                translations={t}
+                name="design"
+              />
+              <div className="space-y-2">
+                <Label htmlFor="feedback-message" className="text-slate-700">
+                  {t.feedbackMessageLabel}
+                </Label>
+                <Textarea
+                  id="feedback-message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={t.feedbackMessagePlaceholder}
+                  rows={3}
+                  maxLength={500}
                   disabled={sending}
-                  className={cn(
-                    'h-10 w-10 rounded-full border text-sm font-medium transition-all',
-                    rating === value
-                      ? 'border-blue-600 bg-blue-600 text-white shadow-md'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
-                  )}
+                  className="resize-none text-sm"
+                />
+              </div>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                {t.feedbackServiceHintBefore}
+                <a
+                  href="https://formsubmit.co/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-slate-600"
                 >
-                  {value}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="feedback-message" className="text-slate-700">
-              {t.feedbackMessageLabel}
-            </Label>
-            <Textarea
-              id="feedback-message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder={t.feedbackMessagePlaceholder}
-              rows={3}
-              maxLength={500}
-              disabled={sending}
-              className="resize-none text-sm"
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={!rating || sending}
-            className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
-          >
-            {sending ? t.feedbackSending : t.feedbackSubmit}
-          </Button>
-        </form>
+                  {t.feedbackServiceName}
+                </a>
+                {t.feedbackServiceHintAfter}
+              </p>
+              <Button
+                type="submit"
+                disabled={!canSubmit || sending}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
+              >
+                {sending ? t.feedbackSending : t.feedbackSubmit}
+              </Button>
+            </form>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
