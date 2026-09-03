@@ -101,8 +101,8 @@ export const translations = {
 
     // Feedback
     feedbackButton: 'Feedback',
-    feedbackTitle: 'Hey — kurz dein Feedback?',
-    feedbackSubtitle: 'Vorschläge, Anregungen oder Ideen — alles willkommen. Auch nur ein Satz reicht.',
+    feedbackTitle: 'Hey - kurz dein Feedback?',
+    feedbackSubtitle: 'Vorschläge, Anregungen oder Ideen - alles willkommen. Auch nur ein Satz reicht.',
     feedbackOverallLabel: 'Gesamteindruck',
     feedbackDesignLabel: 'Design',
     feedbackMoodHint: 'tippe ein Gesicht',
@@ -116,13 +116,12 @@ export const translations = {
     feedbackSubmit: 'Abschicken',
     feedbackSending: 'Unterwegs…',
     feedbackEmailSubject: 'Briefeditor Feedback',
-    feedbackThanksTitle: 'Danke dir!',
+    feedbackThanksTitle: 'Vielen Dank für dein Feedback!',
     feedbackThanksDescription: 'Das hilft mir echt weiter.',
-    feedbackThanksHappy: 'Schön! Freut mich sehr ✨',
-    feedbackErrorTitle: 'Oh — nicht angekommen',
+    feedbackErrorTitle: 'Oh - nicht angekommen',
     feedbackErrorDescription: 'Versuch’s bitte später nochmal.',
     feedbackServiceHintBefore: 'Versand über ',
-    feedbackServiceHintAfter: ' – Details in der Datenschutzerklärung.',
+    feedbackServiceHintAfter: ' - Details in der Datenschutzerklärung.',
     feedbackServiceName: 'FormSubmit',
   },
   en: {
@@ -226,8 +225,8 @@ export const translations = {
 
     // Feedback
     feedbackButton: 'Feedback',
-    feedbackTitle: 'Hey — quick feedback?',
-    feedbackSubtitle: 'Suggestions, ideas, or rants — all welcome. Even one sentence is enough.',
+    feedbackTitle: 'Hey - quick feedback?',
+    feedbackSubtitle: 'Suggestions, ideas, or rants - all welcome. Even one sentence is enough.',
     feedbackOverallLabel: 'Overall',
     feedbackDesignLabel: 'Design',
     feedbackMoodHint: 'pick a face',
@@ -241,13 +240,12 @@ export const translations = {
     feedbackSubmit: 'Send it',
     feedbackSending: 'On its way…',
     feedbackEmailSubject: 'Letter Editor Feedback',
-    feedbackThanksTitle: 'Thanks a lot!',
+    feedbackThanksTitle: 'Thank you for your feedback!',
     feedbackThanksDescription: 'That really helps.',
-    feedbackThanksHappy: 'Awesome — made my day ✨',
-    feedbackErrorTitle: 'Oh — didn’t go through',
+    feedbackErrorTitle: 'Oh - didn’t go through',
     feedbackErrorDescription: 'Please try again in a bit.',
     feedbackServiceHintBefore: 'Sent via ',
-    feedbackServiceHintAfter: ' – see the privacy policy for details.',
+    feedbackServiceHintAfter: ' - see the privacy policy for details.',
     feedbackServiceName: 'FormSubmit',
   }
 };

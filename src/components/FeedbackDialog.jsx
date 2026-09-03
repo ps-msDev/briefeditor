@@ -38,7 +38,7 @@ function MoodPicker({ label, value, onChange, disabled, translations: t, name })
               type="button"
               onClick={() => onChange(mood.value)}
               aria-pressed={isSelected}
-              aria-label={`${mood.value}/5 – ${t[mood.key]}`}
+              aria-label={`${mood.value}/5 - ${t[mood.key]}`}
               disabled={disabled}
               className={cn(
                 'flex h-11 w-11 items-center justify-center rounded-2xl text-2xl transition-all duration-200',
@@ -98,8 +98,10 @@ export default function FeedbackDialog({ translations: t }) {
           _subject: t.feedbackEmailSubject,
           overall: `${overall}/5`,
           design: `${design}/5`,
-          message: message.trim() || '—',
-          source: 'briefeditor'
+          message: message.trim() || '-',
+          source: 'briefeditor',
+          _captcha: false,
+          _template: 'table'
         })
       });
 
@@ -115,7 +117,7 @@ export default function FeedbackDialog({ translations: t }) {
       setJustSent(true);
       toast({
         title: t.feedbackThanksTitle,
-        description: overall >= 4 ? t.feedbackThanksHappy : t.feedbackThanksDescription
+        description: t.feedbackThanksDescription
       });
 
       window.setTimeout(() => {
