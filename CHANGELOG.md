@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/ps-msDev/briefeditor/compare/v1.2.2...v1.2.3) (2026-09-06)
+
+
+### Bug Fixes
+
+* dismiss feedback toast after 10s and keep the dialog in the mobile viewport ([317c609](https://github.com/ps-msDev/briefeditor/commit/317c60966907b712e0be9d3b0d06292a47903bc9))
+
 ## [1.2.2](https://github.com/ps-msDev/briefeditor/compare/v1.2.1...v1.2.2) (2026-09-06)
 
 
