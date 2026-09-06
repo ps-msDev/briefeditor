@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 
 const TOAST_LIMIT = 20;
-const TOAST_REMOVE_DELAY = 1000000;
+const TOAST_REMOVE_DELAY = 400;
+const DEFAULT_TOAST_DURATION = 10000;
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
@@ -19,6 +20,7 @@ function genId() {
 }
 
 const toastTimeouts = new Map();
+const durationTimeouts = new Map();
 
 const addToRemoveQueue = (toastId) => {
   if (toastTimeouts.has(toastId)) {
@@ -102,7 +104,7 @@ function dispatch(action) {
   });
 }
 
-function toast({ ...props }) {
+function toast({ duration = DEFAULT_TOAST_DURATION, ...props }) {
   const id = genId();
 
   const update = (props) =>
@@ -111,8 +113,14 @@ function toast({ ...props }) {
       toast: { ...props, id },
     });
 
-  const dismiss = () =>
+  const dismiss = () => {
+    const durationTimeout = durationTimeouts.get(id);
+    if (durationTimeout) {
+      clearTimeout(durationTimeout);
+      durationTimeouts.delete(id);
+    }
     dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id });
+  };
 
   dispatch({
     type: actionTypes.ADD_TOAST,
@@ -125,6 +133,16 @@ function toast({ ...props }) {
       },
     },
   });
+
+  if (typeof duration === "number" && duration > 0) {
+    durationTimeouts.set(
+      id,
+      setTimeout(() => {
+        durationTimeouts.delete(id);
+        dismiss();
+      }, duration)
+    );
+  }
 
   return {
     id,
