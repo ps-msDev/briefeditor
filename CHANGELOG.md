@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.2](https://github.com/ps-msDev/briefeditor/compare/v1.2.1...v1.2.2) (2026-09-06)
+
+
+### Features
+
+* add floating feedback dialog with rating and short text ([cedafaf](https://github.com/ps-msDev/briefeditor/commit/cedafaf09fa089e96b0d9913625438aa80c65c79))
+* polish feedback UI with emoji moods and privacy disclosure ([a4e4e07](https://github.com/ps-msDev/briefeditor/commit/a4e4e07a0bec022ceb5555826c8942458a21731f))
+
+
+### Bug Fixes
+
+* polish feedback copy and thank-you message ([55b9522](https://github.com/ps-msDev/briefeditor/commit/55b952237d81d1c73f5c939f00fee88864432287))
+* send feedback directly via FormSubmit instead of mailto ([1f7cccb](https://github.com/ps-msDev/briefeditor/commit/1f7cccbd1781d9b2c665d147113a9deb78532623))
+
 ## [1.2.1](https://github.com/ps-msDev/briefeditor/compare/v1.2.0...v1.2.1) (2026-07-18)
 
 
