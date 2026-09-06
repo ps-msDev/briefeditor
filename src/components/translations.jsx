@@ -98,6 +98,31 @@ export const translations = {
     // PDF Export errors
     pdfErrorTitle: 'PDF-Export fehlgeschlagen',
     pdfErrorDescription: 'Der Brief konnte nicht als PDF erstellt werden. Bitte versuchen Sie es erneut.',
+
+    // Feedback
+    feedbackButton: 'Feedback',
+    feedbackTitle: 'Hey - kurz dein Feedback?',
+    feedbackSubtitle: 'Vorschläge, Anregungen oder Ideen - alles willkommen. Auch nur ein Satz reicht.',
+    feedbackOverallLabel: 'Gesamteindruck',
+    feedbackDesignLabel: 'Design',
+    feedbackMoodHint: 'tippe ein Gesicht',
+    feedbackMood1: 'meh…',
+    feedbackMood2: 'geht so',
+    feedbackMood3: 'okay',
+    feedbackMood4: 'gefällt mir',
+    feedbackMood5: 'richtig gut!',
+    feedbackMessageLabel: 'Nachricht (optional)',
+    feedbackMessagePlaceholder: 'Was fehlt dir? Was nervt? Was wäre cool? Oder einfach Hallo 👋',
+    feedbackSubmit: 'Abschicken',
+    feedbackSending: 'Unterwegs…',
+    feedbackEmailSubject: 'Briefeditor Feedback',
+    feedbackThanksTitle: 'Vielen Dank für dein Feedback!',
+    feedbackThanksDescription: 'Das hilft mir echt weiter.',
+    feedbackErrorTitle: 'Oh - nicht angekommen',
+    feedbackErrorDescription: 'Versuch’s bitte später nochmal.',
+    feedbackServiceHintBefore: 'Versand über ',
+    feedbackServiceHintAfter: ' - Details in der Datenschutzerklärung.',
+    feedbackServiceName: 'FormSubmit',
   },
   en: {
     // Header
@@ -197,5 +222,30 @@ export const translations = {
     // PDF Export errors
     pdfErrorTitle: 'PDF export failed',
     pdfErrorDescription: 'The letter could not be exported as a PDF. Please try again.',
+
+    // Feedback
+    feedbackButton: 'Feedback',
+    feedbackTitle: 'Hey - quick feedback?',
+    feedbackSubtitle: 'Suggestions, ideas, or rants - all welcome. Even one sentence is enough.',
+    feedbackOverallLabel: 'Overall',
+    feedbackDesignLabel: 'Design',
+    feedbackMoodHint: 'pick a face',
+    feedbackMood1: 'meh…',
+    feedbackMood2: 'so-so',
+    feedbackMood3: 'okay',
+    feedbackMood4: 'I like it',
+    feedbackMood5: 'love it!',
+    feedbackMessageLabel: 'Message (optional)',
+    feedbackMessagePlaceholder: 'What’s missing? What’s annoying? What would be cool? Or just say hi 👋',
+    feedbackSubmit: 'Send it',
+    feedbackSending: 'On its way…',
+    feedbackEmailSubject: 'Letter Editor Feedback',
+    feedbackThanksTitle: 'Thank you for your feedback!',
+    feedbackThanksDescription: 'That really helps.',
+    feedbackErrorTitle: 'Oh - didn’t go through',
+    feedbackErrorDescription: 'Please try again in a bit.',
+    feedbackServiceHintBefore: 'Sent via ',
+    feedbackServiceHintAfter: ' - see the privacy policy for details.',
+    feedbackServiceName: 'FormSubmit',
   }
 };

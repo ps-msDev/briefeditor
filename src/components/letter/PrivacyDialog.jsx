@@ -12,7 +12,7 @@ export default function PrivacyDialog({ language }) {
         },
         {
           title: '2. Allgemeine Hinweise',
-          text: 'Diese Website dient ausschließlich zur privaten und nicht-kommerziellen Nutzung.\nEs werden keine personenbezogenen Daten im Sinne der DSGVO aktiv erhoben, gespeichert oder ausgewertet.\nEin Login, Formular oder Newsletter ist nicht vorhanden.'
+          text: 'Diese Website dient ausschließlich zur privaten und nicht-kommerziellen Nutzung.\nBriefe werden ausschließlich lokal in Ihrem Browser erstellt; der Briefinhalt wird nicht auf einem eigenen Server gespeichert.\nEs gibt kein Login und keinen Newsletter.\nOptional können Sie über das Feedback-Formular eine Bewertung und einen kurzen Text senden (siehe Abschnitt 5).'
         },
         {
           title: '3. Hosting',
@@ -32,12 +32,20 @@ export default function PrivacyDialog({ language }) {
           extra: 'Rechtsgrundlage: Art. 6 Abs. 1 f DSGVO (berechtigtes Interesse an einer anonymisierten Analyse der Website-Nutzung).'
         },
         {
-          title: '5. Rechte der betroffenen Personen',
-          text: 'Da keine personenbezogenen Daten verarbeitet oder gespeichert werden, bestehen im Normalfall keine Betroffenenrechte.\nSollten dennoch Fragen zum Datenschutz bestehen, können Sie sich jederzeit per E-Mail an die oben genannte Adresse wenden.'
+          title: '5. Optionales Feedback (FormSubmit)',
+          text: 'Über den Feedback-Button können Sie freiwillig Bewertungen (Gesamteindruck und Design, jeweils 1–5) und optional einen kurzen Freitext senden.\nDie Übermittlung erfolgt über den Dienst FormSubmit (formsubmit.co). FormSubmit leitet die Angaben per E-Mail an die oben genannte Kontaktadresse weiter und kann dabei technische Daten (z. B. IP-Adresse) zur Spam-Abwehr verarbeiten.\nEs werden keine Cookies von FormSubmit auf dieser Website gesetzt.\nDie Nutzung des Feedback-Formulars ist freiwillig. Rechtsgrundlage: Art. 6 Abs. 1 a DSGVO (Einwilligung durch absichtliches Absenden).',
+          link: {
+            text: 'Weitere Informationen: FormSubmit',
+            url: 'https://formsubmit.co/'
+          }
         },
         {
-          title: '6. Änderungen dieser Erklärung',
-          text: 'Diese Datenschutzerklärung kann bei technischen oder rechtlichen Änderungen angepasst werden.\nStand: Oktober 2025'
+          title: '6. Rechte der betroffenen Personen',
+          text: 'Soweit personenbezogene Daten verarbeitet werden (insbesondere bei Feedback), stehen Ihnen die Rechte aus der DSGVO zu (u. a. Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch).\nFür Fragen zum Datenschutz können Sie sich jederzeit per E-Mail an die oben genannte Adresse wenden.'
+        },
+        {
+          title: '7. Änderungen dieser Erklärung',
+          text: 'Diese Datenschutzerklärung kann bei technischen oder rechtlichen Änderungen angepasst werden.\nStand: August 2026'
         }
       ]
     },
@@ -50,7 +58,7 @@ export default function PrivacyDialog({ language }) {
         },
         {
           title: '2. General Information',
-          text: 'This website is exclusively for private and non-commercial use.\nNo personal data within the meaning of GDPR is actively collected, stored, or evaluated.\nThere is no login, form, or newsletter.'
+          text: 'This website is exclusively for private and non-commercial use.\nLetters are created only locally in your browser; letter content is not stored on our own server.\nThere is no login and no newsletter.\nOptionally, you can send a rating and a short message via the feedback form (see section 5).'
         },
         {
           title: '3. Hosting',
@@ -70,12 +78,20 @@ export default function PrivacyDialog({ language }) {
           extra: 'Legal basis: Art. 6 Para. 1 f GDPR (legitimate interest in anonymized analysis of website usage).'
         },
         {
-          title: '5. Rights of Data Subjects',
-          text: 'Since no personal data is processed or stored, there are normally no data subject rights.\nIf you have any questions about data protection, you can contact us at any time via email at the address provided above.'
+          title: '5. Optional Feedback (FormSubmit)',
+          text: 'Via the feedback button you can voluntarily send ratings (overall and design, each 1–5) and optionally a short free-text message.\nDelivery uses the FormSubmit service (formsubmit.co). FormSubmit forwards the information by email to the contact address above and may process technical data (e.g. IP address) for spam protection.\nFormSubmit does not set cookies on this website.\nUsing the feedback form is voluntary. Legal basis: Art. 6 Para. 1 a GDPR (consent by intentionally submitting).',
+          link: {
+            text: 'More information: FormSubmit',
+            url: 'https://formsubmit.co/'
+          }
         },
         {
-          title: '6. Changes to this Declaration',
-          text: 'This privacy policy may be updated in case of technical or legal changes.\nLast updated: October 2025'
+          title: '6. Rights of Data Subjects',
+          text: 'Where personal data is processed (especially with feedback), you have the rights under the GDPR (including access, rectification, erasure, restriction, objection).\nIf you have questions about data protection, you can contact us at any time via email at the address provided above.'
+        },
+        {
+          title: '7. Changes to this Declaration',
+          text: 'This privacy policy may be updated in case of technical or legal changes.\nLast updated: August 2026'
         }
       ]
     }
